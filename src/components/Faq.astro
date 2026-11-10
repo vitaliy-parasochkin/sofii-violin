@@ -1,0 +1,136 @@
+---
+// JSON-LD FAQPage для цих питань формує сторінка (src/pages/index.astro) з тих самих даних.
+import { FAQ } from '../data/faq';
+import { LINKS } from '../data/site';
+---
+
+<section class="section section--sand faq" id="faq" aria-labelledby="faq-title">
+  <div class="container faq__grid">
+    <header class="faq__head">
+      <p class="eyebrow">Питання</p>
+      <h2 id="faq-title" class="section-title">Часті <em>запитання</em></h2>
+      <p class="faq__intro">
+        Не знайшли відповіді?
+        <a class="text-cta" href={LINKS.instagram} target="_blank" rel="noopener">
+          Напишіть мені в <span class="nowrap">Instagram<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M4 12h15M13 6l6 6-6 6" />
+            </svg></span>
+        </a>
+      </p>
+    </header>
+
+    <div class="faq__list">
+      {
+        FAQ.map((item) => (
+          <details class="faq__item">
+            <summary class="faq__question">
+              <h3>{item.question}</h3>
+              <span class="faq__icon" aria-hidden="true" />
+            </summary>
+            <p class="faq__answer">{item.answer}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__grid {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .faq__intro {
+    margin-top: var(--space-m);
+    color: var(--color-muted);
+  }
+
+  .faq__intro .text-cta {
+    display: table; /* з нового рядка, ширина — по тексту */
+    margin-top: var(--space-3xs);
+  }
+
+  /* ——— Список питань ——— */
+  .faq__list {
+    border-top: var(--border-thin);
+  }
+
+  .faq__item {
+    border-bottom: var(--border-thin);
+  }
+
+  .faq__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    padding-block: var(--space-m);
+    cursor: pointer;
+    list-style: none; /* прибрати стандартний трикутник */
+  }
+
+  .faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__question h3 {
+    font-size: var(--text-lg);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .faq__question:hover h3 {
+    color: var(--color-accent-strong);
+  }
+
+  /* Плюс, що стає мінусом */
+  .faq__icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--color-accent);
+    border-radius: 50%;
+  }
+
+  .faq__icon::before,
+  .faq__icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.75rem;
+    height: 1.5px;
+    background-color: var(--color-accent-strong);
+    transform: translate(-50%, -50%);
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  .faq__icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .faq__item[open] .faq__icon::after {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  .faq__answer {
+    max-width: var(--container-narrow);
+    padding: 0 3rem var(--space-m) 0;
+    color: var(--color-muted);
+  }
+
+  /* ——— Планшет і більше: заголовок зліва, питання справа ——— */
+  @media (min-width: 48rem) {
+    .faq__grid {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+      column-gap: var(--space-xl);
+      align-items: start;
+    }
+
+    .faq__head {
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-m));
+    }
+  }
+</style>

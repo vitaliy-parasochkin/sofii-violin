@@ -1,0 +1,295 @@
+---
+import { Picture } from 'astro:assets';
+import heroPhoto from '../assets/photos/hero.jpg';
+import { LINKS, TEACHER } from '../data/site';
+import Sprig from './Sprig.astro';
+import CtaButton from './CtaButton.astro';
+---
+
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="container hero__grid">
+    <div class="hero__text">
+      <h1 id="hero-title" class="hero__title">
+        Уроки скрипки онлайн <em>для&nbsp;дорослих і&nbsp;дітей</em>
+      </h1>
+
+      <p class="hero__lead">
+        Мене звати Софія. Я граю на скрипці {TEACHER.yearsPlaying}&nbsp;років і вже {TEACHER.yearsTeaching}&nbsp;років
+        навчаю інших — дорослих, які починають з нуля, і дітей. Заняття індивідуальні, тож рухаємось у вашому темпі.
+      </p>
+
+      <div class="hero__actions">
+        <CtaButton />
+        <p class="hero__alt">
+          Пишіть мені в <a href={LINKS.instagram} target="_blank" rel="noopener">Instagram Direct</a> — домовимося про час.
+        </p>
+      </div>
+    </div>
+
+    <div class="hero__visual">
+      <figure class="polaroid">
+        <Sprig class="polaroid__sprig" />
+        <Picture
+          src={heroPhoto}
+          alt="Софія тримає скрипку на тлі квітучого саду"
+          formats={['avif', 'webp']}
+          widths={[320, 420, 640, 832, 1040]}
+          sizes="(min-width: 48rem) 23rem, min(20.5rem, 84vw)"
+          priority
+          class="polaroid__img"
+        />
+        <figcaption class="polaroid__caption">— Софія</figcaption>
+      </figure>
+
+      <ul class="hero__note">
+        <li><strong>50 хвилин</strong> один на один</li>
+        <li><strong>Google Meet</strong> телефон чи ноутбук</li>
+        <li><strong>З будь-якої країни</strong> українською</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: var(--space-l) var(--space-xl);
+    overflow-x: clip; /* гілочка й нахили не дають горизонтального скролу */
+  }
+
+  .hero__grid {
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  /* ——— Поява при завантаженні: CSS-анімація стартує з першим кадром (без JS) ———
+     translate (а не transform) — не ламає нахил полароїда. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__title,
+    .hero__lead,
+    .hero__actions,
+    .polaroid,
+    .hero__note {
+      animation: hero-in var(--duration-slow) var(--ease-out) both;
+    }
+
+    .hero__lead {
+      animation-delay: 100ms;
+    }
+
+    .polaroid {
+      animation-delay: 150ms;
+    }
+
+    .hero__actions {
+      animation-delay: 200ms;
+    }
+
+    .hero__note {
+      animation-delay: 400ms;
+    }
+  }
+
+  @keyframes hero-in {
+    from {
+      opacity: 0;
+      translate: 0 16px;
+    }
+  }
+
+  /* ——— Текст ——— */
+
+  .hero__title {
+    font-size: var(--text-display);
+    font-weight: var(--weight-medium);
+    letter-spacing: -0.01em;
+  }
+
+  .hero__title em {
+    display: block;
+    color: var(--color-accent); /* великий текст — контраст достатній */
+    font-style: italic;
+  }
+
+  .hero__lead {
+    max-width: 34rem;
+    margin-top: var(--space-m);
+    color: var(--color-muted);
+    font-size: var(--text-lg);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-s);
+    margin-top: var(--space-l);
+  }
+
+  .hero__alt {
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+  }
+
+  /* ——— Фото ——— */
+  .hero__visual {
+    position: relative;
+    display: grid;
+    justify-items: start;
+    padding-block-start: 5.5rem; /* місце для гілочки над полароїдом */
+    padding-inline-start: var(--space-2xs);
+  }
+
+
+  .polaroid {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 22rem);
+    padding: 0.75rem 0.75rem 0;
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-paper);
+    transform: rotate(var(--polaroid-tilt));
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  /* «Скотч» */
+  .polaroid::before {
+    content: '';
+    position: absolute;
+    top: -0.9rem;
+    left: 50%;
+    z-index: 2;
+    width: 6.5rem;
+    height: 1.9rem;
+    background-color: rgb(228 216 198 / 0.82);
+    box-shadow: 0 1px 2px rgb(59 42 32 / 0.08);
+    transform: translateX(-50%) rotate(-3deg);
+    clip-path: polygon(
+      0 8%, 4% 0, 8% 10%, 12% 0, 100% 0, 96% 12%, 100% 25%, 96% 40%, 100% 55%, 96% 70%, 100% 85%, 97% 100%,
+      90% 92%, 86% 100%, 0 100%, 4% 85%, 0 70%, 4% 55%, 0 40%, 4% 25%
+    );
+  }
+
+  /* Гілочка «притиснута» скотчем: стебло під ним, листя над краєм фото.
+     :global — клас передається в дочірній компонент, scoped-атрибут туди не потрапляє. */
+  .polaroid :global(.polaroid__sprig) {
+    position: absolute;
+    top: -7.25rem;
+    left: 50%;
+    z-index: 1;
+    width: 4.5rem;
+    height: auto;
+    transform: translateX(-35%) rotate(-10deg);
+    transform-origin: bottom center;
+  }
+
+  .polaroid :global(.polaroid__img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .polaroid__caption {
+    padding-block: 0.7rem 0.9rem;
+    color: var(--color-muted);
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    font-style: italic;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .polaroid:hover {
+      transform: rotate(-0.5deg) translateY(-4px);
+    }
+  }
+
+  /* ——— Нотатка, що заходить на фото ——— */
+  .hero__note {
+    position: relative;
+    z-index: 2;
+    justify-self: end;
+    width: min(100%, 14.5rem);
+    margin-top: -2.25rem;
+    padding: var(--space-s) var(--space-m);
+    list-style: none;
+    background-color: var(--color-surface);
+    border: var(--border-thin);
+    border-radius: var(--radius-s);
+    box-shadow: var(--shadow-paper);
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+    transform: rotate(1.5deg);
+  }
+
+  .hero__note li {
+    position: relative;
+    padding-left: 1.1rem;
+  }
+
+  .hero__note li + li {
+    margin-top: 0.55rem;
+  }
+
+  .hero__note li::before {
+    content: '';
+    position: absolute;
+    top: 0.6em;
+    left: 0;
+    width: 0.55rem;
+    height: 1px;
+    background-color: var(--color-accent);
+  }
+
+  .hero__note strong {
+    display: block;
+    color: var(--color-text);
+    font-weight: var(--weight-semibold);
+  }
+
+  /* ——— Планшет і більше: асиметрична сітка ——— */
+  @media (min-width: 48rem) {
+    .hero {
+      padding-block-start: var(--space-xl);
+    }
+
+    .hero__grid {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: center;
+      gap: var(--space-l);
+    }
+
+    .hero__visual {
+      justify-items: end;
+      padding-inline-start: 0;
+    }
+
+    .polaroid {
+      width: min(100%, 25rem);
+      padding: 1rem 1rem 0;
+    }
+
+    /* На планшеті колонка вузька — нотатка йде під фото, не закриває його */
+    .hero__note {
+      justify-self: start;
+      width: min(100%, 15.5rem);
+      margin-top: var(--space-m);
+    }
+
+  }
+
+  @media (min-width: 64rem) {
+    .hero__grid {
+      gap: var(--space-xl);
+    }
+
+    /* Нотатка заходить на лівий край фото, вище за підпис */
+    .hero__note {
+      position: absolute;
+      bottom: 3.75rem;
+      left: calc(-1 * var(--space-xl));
+      width: 14rem;
+      margin-top: 0;
+    }
+  }
+</style>

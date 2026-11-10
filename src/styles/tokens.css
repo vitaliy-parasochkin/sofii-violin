@@ -1,0 +1,81 @@
+/*
+ * Дизайн-токени.
+ * Шрифтові змінні --font-heading і --font-body генерує Astro Fonts API
+ * (astro.config.mjs → fonts, компонент <Font /> у BaseLayout), тут їх не перевизначаємо.
+ */
+:root {
+  /* Кольори (з брифу) */
+  --color-bg: #f6f0e6; /* кремовий */
+  --color-surface: #fbf7f0; /* «папір» для карток */
+  --color-text: #3b2a20; /* еспресо — 12:1 на bg */
+  --color-muted: #6b4a36; /* кава — 7:1 на bg */
+  --color-accent: #b5704a; /* теракота — 3.4:1 на bg: ТІЛЬКИ великий текст (≥24px) і декор */
+  --color-accent-2: #8a8f6a; /* оливковий — 3:1 на bg: тільки декор (гілочки), не текст */
+  --color-line: #e4d8c6;
+
+  /* Темніша теракота для дрібного тексту, посилань і фону CTA (AA):
+     4.8:1 на bg, білий текст на ній — 5.4:1 */
+  --color-accent-strong: #9a5a38;
+  --color-accent-strong-hover: #844a2c; /* hover CTA, білий текст — 7:1 */
+  --color-on-accent: #ffffff;
+  --color-focus: var(--color-accent-strong);
+
+  /* Фони для ритму секцій (див. .section--sand / .section--dark у global.css) */
+  --color-sand: #efe4d3; /* пісочний — трохи темніший за кремовий */
+  --color-espresso: #3b2a20; /* темні секції */
+
+  /* Типографіка: шкала через clamp(), 360px → 1440px */
+  --text-xs: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --text-sm: clamp(0.9375rem, 0.91rem + 0.12vw, 1rem);
+  --text-base: clamp(1.0625rem, 1.03rem + 0.15vw, 1.1875rem);
+  --text-lg: clamp(1.1875rem, 1.13rem + 0.28vw, 1.375rem);
+  --text-xl: clamp(1.375rem, 1.24rem + 0.6vw, 1.75rem);
+  --text-2xl: clamp(1.75rem, 1.5rem + 1.1vw, 2.5rem);
+  --text-3xl: clamp(2.125rem, 1.7rem + 1.9vw, 3.5rem);
+  --text-display: clamp(2.5rem, 1.85rem + 2.9vw, 4.75rem);
+
+  --leading-tight: 1.1;
+  --leading-snug: 1.3;
+  --leading-normal: 1.6;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* Відступи */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-s: 1rem;
+  --space-m: clamp(1.25rem, 1.1rem + 0.6vw, 1.75rem);
+  --space-l: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
+  --space-xl: clamp(2.5rem, 1.9rem + 2.6vw, 4.5rem);
+  --space-2xl: clamp(4rem, 3rem + 4.4vw, 7.5rem); /* між секціями */
+
+  /* Висота sticky-хедера (відступ для якорів і sticky-заголовків) */
+  --header-h: 3.75rem;
+
+  /* Сітка */
+  --container-max: 75rem; /* 1200px */
+  --container-narrow: 42rem; /* текстові блоки */
+  --gutter: clamp(1rem, 0.6rem + 1.8vw, 2.5rem);
+
+  /* Форми й деталі */
+  --radius-s: 4px;
+  --radius-m: 10px;
+  --radius-pill: 999px;
+  --border-thin: 1px solid var(--color-line);
+  /* М'яка «паперова» тінь — без світіння */
+  --shadow-paper: 0 1px 2px rgb(59 42 32 / 0.06), 0 8px 24px -12px rgb(59 42 32 / 0.18);
+
+  /* Рух (з брифу) */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --duration-fast: 200ms;
+  --duration-base: 500ms;
+  --duration-slow: 700ms;
+  --reveal-distance: 14px;
+
+  /* Ледь помітна паперова текстура: SVG-шум, альфа ~0–8% (у середньому ~4%) */
+  --paper-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.23 0 0 0 0 0.16 0 0 0 0 0.12 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --polaroid-tilt: -2deg;
+}

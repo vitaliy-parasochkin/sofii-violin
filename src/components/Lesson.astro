@@ -1,0 +1,203 @@
+---
+import CtaButton from './CtaButton.astro';
+
+const needs = ['Скрипка і смичок', 'Ноутбук або телефон', 'Стабільний інтернет', '50 хвилин тільки для себе'];
+
+const steps = [
+  {
+    title: 'Постановка рук',
+    text: 'Перевіряємо, як ви тримаєте скрипку і смичок, щоб грати було зручно і без напруги.',
+  },
+  {
+    title: 'Вправи на техніку',
+    text: 'Працюємо над чистим звуком і рухами смичка — стільки, скільки корисно саме вам на цьому етапі.',
+  },
+  {
+    title: 'Ваш твір',
+    text: 'Розбираємо музику, яку ви обрали: класику чи щось сучасне.',
+  },
+  {
+    title: 'Підсумки і завдання',
+    text: 'Говоримо, що вже виходить, і я даю завдання до наступного заняття.',
+  },
+];
+---
+
+<section class="section section--dark lesson" id="yak-prokhodyt-urok" aria-labelledby="lesson-title">
+  <div class="container lesson__grid">
+    <header class="lesson__head">
+      <p class="eyebrow">Урок</p>
+      <h2 id="lesson-title" class="section-title">Як проходить <em>онлайн-урок</em></h2>
+    </header>
+
+    <div class="lesson__needs">
+      <h3 class="lesson__subtitle">Що знадобиться</h3>
+      <ul class="lesson__checklist">
+        {
+          needs.map((item) => (
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="m5 12.5 4.5 4.5L19 7" />
+              </svg>
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+      <p class="lesson__meet">
+        За 5 хвилин до початку я надсилаю посилання на Google Meet. Воно відкривається просто в браузері.
+      </p>
+    </div>
+
+    <div class="lesson__flow">
+      <h3 class="lesson__subtitle">Як минають 50 хвилин</h3>
+      <ol class="lesson__steps">
+        {
+          steps.map((step, i) => (
+            <li class="lesson__step">
+              <span class="lesson__num" aria-hidden="true">{i + 1}</span>
+              <h4 class="lesson__step-title">{step.title}</h4>
+              <p>{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="lesson__cta">
+        <CtaButton />
+        <p>Перше заняття — безкоштовне.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .lesson__grid {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .lesson__subtitle {
+    margin-bottom: var(--space-m);
+    font-size: var(--text-xl);
+  }
+
+  /* ——— Що знадобиться: «паперова» картка ——— */
+  .lesson__needs {
+    align-self: start;
+    padding: var(--space-m);
+    background-color: var(--color-surface);
+    border: var(--border-thin);
+    border-radius: var(--radius-s);
+    box-shadow: var(--shadow-paper);
+  }
+
+  .lesson__checklist {
+    display: grid;
+    gap: var(--space-xs);
+    padding: 0;
+    list-style: none;
+  }
+
+  .lesson__checklist li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xs);
+  }
+
+  .lesson__checklist svg {
+    flex-shrink: 0;
+    width: 1.1em;
+    height: 1.1em;
+    color: var(--color-accent);
+    transform: translateY(0.18em);
+  }
+
+  .lesson__meet {
+    margin-top: var(--space-m);
+    padding-top: var(--space-s);
+    border-top: var(--border-thin);
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+  }
+
+  /* ——— 50 хвилин: кроки з вертикальною лінією ——— */
+  .lesson__steps {
+    padding: 0;
+    list-style: none;
+  }
+
+  .lesson__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    column-gap: var(--space-s);
+    padding-bottom: var(--space-m);
+  }
+
+  /* Лінія між номерами */
+  .lesson__step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    top: 3rem;
+    bottom: 0.25rem;
+    left: calc(1.375rem - 0.5px);
+    width: 1px;
+    background-color: var(--color-line);
+  }
+
+  .lesson__num {
+    grid-row: span 2;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--color-accent);
+    border-radius: 50%;
+    color: var(--color-accent);
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-style: italic;
+    line-height: 1;
+  }
+
+  .lesson__step-title {
+    align-self: center;
+    font-size: var(--text-lg);
+  }
+
+  .lesson__step p {
+    margin-top: var(--space-3xs);
+    color: var(--color-muted);
+  }
+
+  .lesson__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-s) var(--space-m);
+    margin-top: var(--space-m);
+  }
+
+  .lesson__cta p {
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+  }
+
+  /* ——— Планшет і більше: картка зліва, кроки справа ——— */
+  @media (min-width: 48rem) {
+    .lesson__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      column-gap: var(--space-xl);
+    }
+
+    .lesson__head {
+      grid-column: 1 / -1;
+    }
+
+    .lesson__needs {
+      padding: var(--space-l);
+      transform: rotate(-1deg); /* «живий» нахил, як у полароїда */
+    }
+  }
+</style>

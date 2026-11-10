@@ -1,0 +1,172 @@
+---
+import { Font } from 'astro:assets';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { LINKS, OG_IMAGE, SITE, TEACHER } from '../data/site';
+import '../styles/global.css';
+
+type JsonLdNode = Record<string, unknown>;
+
+interface Props {
+  /** Повний <title>, ≤ 60 символів. */
+  title?: string;
+  /** meta description, ≤ 155 символів. */
+  description?: string;
+  ogImage?: {
+    src: string;
+    width: number;
+    height: number;
+    alt: string;
+    type?: string;
+  };
+  noindex?: boolean;
+  /** Додаткові JSON-LD вузли сторінки (напр. FAQPage), потрапляють у спільний @graph. */
+  jsonLd?: JsonLdNode[];
+}
+
+const {
+  title = SITE.title,
+  description = SITE.description,
+  ogImage = OG_IMAGE,
+  noindex = false,
+  jsonLd = [],
+} = Astro.props;
+
+if (import.meta.env.DEV) {
+  if (title.length > 60) console.warn(`[seo] title > 60 символів (${title.length}): ${title}`);
+  if (description.length > 155)
+    console.warn(`[seo] description > 155 символів (${description.length}): ${description}`);
+}
+
+const site = Astro.site!;
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImageUrl = new URL(ogImage.src, site).href;
+const siteUrl = new URL('/', site).href;
+const sameAs = [LINKS.instagram, LINKS.telegram];
+
+const ids = {
+  website: `${siteUrl}#website`,
+  person: `${siteUrl}#person`,
+  service: `${siteUrl}#service`,
+};
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': ids.website,
+      url: siteUrl,
+      name: SITE.name,
+      inLanguage: SITE.lang,
+      publisher: { '@id': ids.person },
+    },
+    {
+      '@type': 'Person',
+      '@id': ids.person,
+      name: TEACHER.name,
+      alternateName: SITE.name,
+      jobTitle: TEACHER.jobTitle,
+      url: siteUrl,
+      image: ogImageUrl,
+      knowsAbout: ['Гра на скрипці', 'Теорія музики'],
+      knowsLanguage: SITE.lang,
+      sameAs,
+    },
+    {
+      '@type': 'Service',
+      '@id': ids.service,
+      name: 'Онлайн-уроки скрипки',
+      serviceType: 'Індивідуальні уроки гри на скрипці',
+      description:
+        'Індивідуальні онлайн-уроки скрипки й теорії музики українською для дорослих-початківців і дітей. Заняття 50 хвилин у Google Meet.',
+      provider: { '@id': ids.person },
+      areaServed: [{ '@type': 'Country', name: 'Україна' }, 'Онлайн'],
+      availableLanguage: SITE.lang,
+      audience: [
+        { '@type': 'Audience', audienceType: 'Дорослі-початківці' },
+        { '@type': 'PeopleAudience', audienceType: 'Діти', suggestedMinAge: TEACHER.minStudentAge },
+      ],
+      url: siteUrl,
+      sameAs,
+    },
+    ...jsonLd,
+  ],
+};
+
+// Екрануємо "<", щоб вміст не міг закрити тег <script>.
+const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Клас .js до першого відмальовування: анімації появи ховають блоки тільки якщо JS працює -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+
+    <!-- Шрифти: self-hosted через Astro Fonts API. Preload — лише Lora (кирилиця, normal) для H1 у hero. -->
+    <Font cssVariable="--font-heading" preload={[{ subset: 'cyrillic', style: 'normal', weight: 500 }]} />
+    <Font cssVariable="--font-body" />
+
+    <meta name="theme-color" content={SITE.themeColor} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content={String(ogImage.width)} />
+    <meta property="og:image:height" content={String(ogImage.height)} />
+    {ogImage.type && <meta property="og:image:type" content={ogImage.type} />}
+    <meta property="og:image:alt" content={ogImage.alt} />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={ogImage.alt} />
+
+    <script type="application/ld+json" set:html={structuredDataJson} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Перейти до змісту</a>
+    <Header />
+    <slot />
+    <Footer />
+
+    <script>
+      // Поява блоків секцій при прокрутці — один раз. Стилі — у global.css («Поява при прокрутці»).
+      const items = document.querySelectorAll('.section > .container > *');
+      if (!('IntersectionObserver' in window)) {
+        items.forEach((el) => el.classList.add('is-revealed'));
+      } else {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              entry.target.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px' },
+        );
+        items.forEach((el) => observer.observe(el));
+      }
+    </script>
+  </body>
+</html>

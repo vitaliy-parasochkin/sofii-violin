@@ -1,0 +1,210 @@
+---
+import { Picture } from 'astro:assets';
+import { LINKS } from '../data/site';
+// Кропи — область повідомлення зі сторіз (оригінали 1080×1920 лишаються поруч і відкриваються по кліку).
+import shot1 from '../assets/photos/reviews/review1-crop.jpg';
+import shot2 from '../assets/photos/reviews/review2-crop.jpg';
+import shot3 from '../assets/photos/reviews/review3-crop.jpg';
+import shot4 from '../assets/photos/reviews/review4-crop.jpg';
+import full1 from '../assets/photos/review1.jpg';
+import full2 from '../assets/photos/review2.jpg';
+import full3 from '../assets/photos/review3.jpg';
+import full4 from '../assets/photos/review4.jpg';
+
+// Відгуки — тільки скрінами, без текстових цитат (рішення 2026-11-10: так правдивіше).
+// alt містить текст повідомлення — для скрінрідерів і пошуку (зображення тексту, WCAG 1.1.1).
+// Скрін мами Міші — з описом замість цитати (там «їздити на заняття», а уроки тільки онлайн).
+const shots = [
+  {
+    img: shot1,
+    full: full1,
+    caption: 'Доросла учениця',
+    alt: 'Відгук дорослої учениці: «Хочу залишити відгук за рік уроків з Софією, прийшла повна нульова і дуже переймалась, що це буде дуже складно, але вже пройшов рік, і я дуже щаслива і задоволена своїми результатами, дуже дякую за терпіння, за те, що привила любов до скрипки і велику мотивацію продовжувати далі»',
+  },
+  {
+    img: shot2,
+    full: full2,
+    caption: 'Мама Марусі',
+    alt: 'Повідомлення від мами Марусі: «Також скидаю відео, як Маруся вчить свою сестричку грати на скрипці. Дякую дуже за заняття! Бачу, яка дитина задоволена і натхненна»',
+  },
+  {
+    img: shot3,
+    full: full3,
+    caption: 'Учениця',
+    alt: 'Відгук учениці: «Мені дуже подобається займатися скрипкою, на наших заняттях завжди дуже атмосферно та вайбово, мені завжди все зрозуміло, коли мені щось пояснюють, дуже люблю свою викладачку Софію, дякую за уроки»',
+  },
+  {
+    img: shot4,
+    full: full4,
+    caption: 'Мама Міші',
+    alt: 'Листування з мамою Міші: фото хлопчика зі скрипкою, мама дякує і пише, що син дуже любить заняття',
+  },
+];
+---
+
+<section class="section reviews" id="vidguky" aria-labelledby="reviews-title">
+  <div class="container">
+    <header class="reviews__head">
+      <p class="eyebrow">Відгуки</p>
+      <h2 id="reviews-title" class="section-title">Що кажуть <em>учні й батьки</em></h2>
+      <p class="reviews__intro">Справжні повідомлення від учнів і батьків — такі, як їх надіслали.</p>
+    </header>
+
+    <ul class="reviews__shots">
+      {
+        shots.map((s) => (
+          <li>
+            <figure class="shot">
+              <a href={s.full.src} class="shot__link">
+                <Picture
+                  src={s.img}
+                  alt={s.alt}
+                  formats={['avif', 'webp']}
+                  widths={[320, 480, 640, 800]}
+                  sizes="(min-width: 75rem) 16rem, (min-width: 48rem) min(24.5rem, 40vw), min(78vw, 19rem)"
+                  class="shot__img"
+                />
+                <span class="visually-hidden"> — відкрити скрін повністю</span>
+              </a>
+              <figcaption class="shot__caption">{s.caption}</figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="reviews__outro">
+      Хочете так само?{' '}
+      <a class="text-cta" href={LINKS.instagram} target="_blank" rel="noopener">
+        Почніть з безкоштовного <span class="nowrap">уроку<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M4 12h15M13 6l6 6-6 6" />
+          </svg></span>
+      </a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .reviews__intro {
+    max-width: 32rem;
+    margin-top: var(--space-s);
+    color: var(--color-muted);
+  }
+
+  /* ——— Телефон: стрічка, яку гортають пальцем ——— */
+  .reviews__shots {
+    display: flex;
+    gap: var(--space-m);
+    /* Стрічка на всю ширину екрана, перший скрін — на лінії тексту */
+    margin: var(--space-l) calc(-1 * var(--gutter)) 0;
+    padding: var(--space-s) var(--gutter) var(--space-m);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    list-style: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .reviews__shots li {
+    flex: 0 0 min(80%, 20rem);
+    scroll-snap-align: start;
+  }
+
+  .shot {
+    padding: 0.6rem 0.6rem 0;
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-paper);
+    transform: rotate(var(--tilt, -1deg));
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  .reviews__shots li:nth-child(even) .shot {
+    --tilt: 1deg;
+  }
+
+  .shot__link {
+    display: block;
+  }
+
+  .shot :global(.shot__img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+
+  .shot__caption {
+    padding-block: 0.6rem 0.7rem;
+    color: var(--color-muted);
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    font-style: italic;
+    text-align: center;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .shot:hover {
+      transform: rotate(0deg) translateY(-4px);
+    }
+  }
+
+  .reviews__outro {
+    margin-top: var(--space-l);
+    color: var(--color-muted);
+  }
+
+  /* ——— Планшет і більше: великі полароїди 2×2, ряди зміщені ——— */
+  @media (min-width: 48rem) {
+    .reviews__shots {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-xl) var(--space-xl);
+      max-width: 56rem;
+      margin: var(--space-xl) auto 0;
+      padding: 0;
+      overflow: visible;
+    }
+
+    .reviews__shots li {
+      max-width: 25.5rem;
+    }
+
+    .reviews__shots li:nth-child(even) {
+      justify-self: end;
+      margin-top: var(--space-xl);
+    }
+
+    .shot {
+      padding: 0.9rem 0.9rem 0;
+      --tilt: -1.5deg;
+    }
+
+    .reviews__shots li:nth-child(even) .shot {
+      --tilt: 1.5deg;
+    }
+
+    .reviews__outro {
+      margin-top: var(--space-xl);
+      text-align: center;
+    }
+  }
+
+  /* ——— Великий екран: 4 в ряд (не 3+1 — тому явний брейкпоінт, а не auto-fit).
+     З 1200px кожен скрін ≥ ~250px — текст на ньому ще читається. ——— */
+  @media (min-width: 75rem) {
+    .reviews__shots {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-l);
+      max-width: none;
+    }
+
+    .reviews__shots li:nth-child(even) {
+      justify-self: stretch;
+      margin-top: var(--space-l);
+    }
+
+    .shot {
+      padding: 0.75rem 0.75rem 0;
+    }
+  }
+</style>

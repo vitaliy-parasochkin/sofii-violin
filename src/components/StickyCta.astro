@@ -1,0 +1,82 @@
+---
+// Мобільна sticky-кнопка запису. Показуємо, коли кнопка в hero пішла з екрана,
+// і ховаємо біля фінального CTA та футера (там уже є свої кнопки).
+// Без JS — не показується зовсім (атрибут hidden).
+import CtaButton from './CtaButton.astro';
+---
+
+<div class="sticky-cta" data-sticky-cta hidden>
+  <CtaButton class="sticky-cta__button" />
+</div>
+
+<style>
+  .sticky-cta {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    padding: 0.75rem var(--gutter) calc(0.75rem + env(safe-area-inset-bottom));
+    background-color: var(--color-surface);
+    border-top: var(--border-thin);
+    box-shadow: 0 -8px 24px -12px rgb(59 42 32 / 0.25);
+    transform: translateY(110%);
+    visibility: hidden;
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      visibility 0s linear var(--duration-base);
+  }
+
+  .sticky-cta.is-visible {
+    transform: none;
+    visibility: visible;
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      visibility 0s;
+  }
+
+  /* :global — клас передається в дочірній компонент */
+  .sticky-cta :global(.sticky-cta__button) {
+    width: 100%;
+  }
+
+  @media (min-width: 48rem) {
+    .sticky-cta {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-sticky-cta]');
+  const heroCta = document.querySelector('.hero__actions');
+  const ends = [document.getElementById('zapys'), document.querySelector('.site-footer')];
+
+  if (bar && heroCta && 'IntersectionObserver' in window) {
+    let heroCtaVisible = true;
+    const visibleEnds = new Set<Element>();
+
+    const update = () => {
+      const show = !heroCtaVisible && visibleEnds.size === 0;
+      bar.classList.toggle('is-visible', show);
+      bar.inert = !show; // прихована кнопка не ловить фокус з клавіатури
+    };
+
+    bar.hidden = false;
+    update();
+
+    new IntersectionObserver(([entry]) => {
+      heroCtaVisible = entry.isIntersecting;
+      update();
+    }).observe(heroCta);
+
+    const endsObserver = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) visibleEnds.add(entry.target);
+        else visibleEnds.delete(entry.target);
+      }
+      update();
+    });
+    for (const el of ends) if (el) endsObserver.observe(el);
+  }
+</script>

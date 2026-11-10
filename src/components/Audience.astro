@@ -1,0 +1,141 @@
+---
+import { LINKS, TEACHER } from '../data/site';
+import Sprig from './Sprig.astro';
+---
+
+<section class="section audience" id="dlia-koho" aria-labelledby="audience-title">
+  <div class="container audience__grid">
+    <header class="audience__head">
+      <p class="eyebrow">Для кого</p>
+      <h2 id="audience-title" class="section-title">Кому підійдуть <em>мої уроки</em></h2>
+      <p class="audience__intro">
+        Заняття індивідуальні, тому програму я будую під вас: під ваш рівень, темп і музику, яку хочеться грати.
+      </p>
+      <Sprig class="audience__sprig" />
+    </header>
+
+    <div class="audience__list">
+      <article class="audience__item">
+        <h3 class="audience__title">Дорослим <em>з&nbsp;нуля</em></h3>
+        <p>
+          Ніколи не тримали скрипку і не знаєте нот? Це нормальна точка старту. Почнемо з того, як тримати скрипку
+          і смичок, а далі крок за кроком дійдемо до мелодій, які вам подобаються. Музична школа в минулому для цього
+          не потрібна.
+        </p>
+      </article>
+
+      <article class="audience__item">
+        <h3 class="audience__title">Дітям <em>онлайн</em></h3>
+        <p>
+          Займаюся з дітьми від {TEACHER.minStudentAge}&nbsp;років. Для дитини урок має бути цікавим, а не суворим:
+          я пояснюю простою мовою, помічаю кожен маленький успіх і підбираю твори, які дитині хочеться грати. А ще
+          одна з моїх учениць уже має диплом конкурсу.
+        </p>
+      </article>
+
+      <article class="audience__item">
+        <h3 class="audience__title">Тим, хто <em>повертається</em></h3>
+        <p>
+          Колись вчилися в музичній школі, а потім скрипка роками лежала у футлярі? Пригадаємо постановку рук,
+          поправимо звички, які заважають, і повернемося до гри — вже для себе, без іспитів і оцінок.
+        </p>
+      </article>
+
+      <p class="audience__outro">
+        Не впевнені, що це про вас? Напишіть мені — на безкоштовному уроці разом зрозуміємо, з чого почати.
+        <a class="text-cta" href={LINKS.instagram} target="_blank" rel="noopener">
+          Написати в <span class="nowrap">Instagram<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M4 12h15M13 6l6 6-6 6" />
+            </svg></span>
+        </a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .audience__grid {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .audience__intro {
+    max-width: 30rem;
+    margin-top: var(--space-m);
+    color: var(--color-muted);
+  }
+
+  /* :global — клас передається в дочірній компонент */
+  .audience__head :global(.audience__sprig) {
+    display: none;
+  }
+
+  /* ——— Список ——— */
+  .audience__item {
+    display: grid;
+    gap: var(--space-xs);
+    padding-block: var(--space-l);
+    border-top: var(--border-thin);
+  }
+
+  .audience__title {
+    font-size: var(--text-2xl);
+  }
+
+  .audience__title em {
+    color: var(--color-accent); /* великий текст */
+    font-style: italic;
+  }
+
+  .audience__item p {
+    max-width: var(--container-narrow);
+  }
+
+  .audience__outro {
+    padding-top: var(--space-l);
+    border-top: var(--border-thin);
+    color: var(--color-muted);
+  }
+
+  .audience__outro .text-cta {
+    display: table; /* з нового рядка, але ширина — по тексту */
+    margin-top: var(--space-xs);
+  }
+
+  /* ——— Планшет і більше: заголовок зліва «прилипає», список справа ——— */
+  @media (min-width: 48rem) {
+    .audience__grid {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+      column-gap: var(--space-xl);
+      align-items: start;
+    }
+
+    .audience__head {
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-m));
+    }
+
+    .audience__head :global(.audience__sprig) {
+      display: block;
+      width: 4.5rem;
+      height: auto;
+      margin-top: var(--space-l);
+      transform: rotate(-8deg);
+    }
+
+    .audience__item:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+  }
+
+  /* ——— Широкий екран: у кожному рядку заголовок і текст поруч ——— */
+  @media (min-width: 64rem) {
+    .audience__item {
+      /* min-content — колонка не вужча за найдовше слово («повертається») */
+      grid-template-columns: minmax(min-content, 2fr) minmax(0, 3fr);
+      column-gap: var(--space-l);
+      align-items: baseline;
+    }
+  }
+</style>

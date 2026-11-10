@@ -1,0 +1,42 @@
+---
+// Тонка ботанічна гілочка — декоративна, без змісту для скрінрідерів.
+// Колір береться з currentColor (за замовчуванням оливковий), розмір і позицію задає батьківський компонент через class.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+  class:list={['sprig', className]}
+  viewBox="0 0 120 220"
+  width="120"
+  height="220"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.25"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d="M58 216C57 176 65 128 62 82S70 22 80 4" />
+  <path d="M60 186C44 180 33 168 29 152C44 156 56 168 60 186Z" />
+  <path d="M60 186C47 176 39 166 29 152" stroke-width="0.75" />
+  <path d="M62 160C76 152 88 140 95 124C80 127 68 140 62 160Z" />
+  <path d="M62 160C72 148 82 136 95 124" stroke-width="0.75" />
+  <path d="M63 128C48 120 40 108 38 92C51 98 61 111 63 128Z" />
+  <path d="M63 128C54 118 46 106 38 92" stroke-width="0.75" />
+  <path d="M63 104C77 96 87 85 91 70C78 74 67 86 63 104Z" />
+  <path d="M63 104C71 92 80 80 91 70" stroke-width="0.75" />
+  <path d="M64 74C53 66 47 55 47 42C57 48 63 60 64 74Z" />
+  <path d="M69 46C79 39 85 29 87 17C77 22 71 32 69 46Z" />
+</svg>
+
+<style>
+  .sprig {
+    color: var(--color-accent-2);
+    pointer-events: none;
+  }
+</style>

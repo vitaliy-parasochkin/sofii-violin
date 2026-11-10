@@ -1,0 +1,166 @@
+---
+// Індикатор прогресу секцій, як у слайдері: крапки збоку з лічильником (від 80rem).
+// Скрипт також оновлює лічильник і лінію прогресу в хедері та активний пункт меню.
+// Без JS крапки — звичайні посилання на секції, без активного стану.
+import { SECTIONS } from '../data/sections';
+
+const total = String(SECTIONS.length).padStart(2, '0');
+---
+
+<nav class="dots" aria-label="Секції сторінки">
+  <p class="dots__counter" data-progress-counter aria-hidden="true" hidden>01 / {total}</p>
+  <ol class="dots__list">
+    {
+      SECTIONS.map((s) => (
+        <li>
+          <a class="dots__link" href={`#${s.id}`} data-dot={s.id}>
+            <span class="dots__label">{s.label}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  .dots {
+    display: none;
+  }
+
+  @media (min-width: 80rem) {
+    .dots {
+      position: fixed;
+      top: 50%;
+      right: 0.75rem;
+      z-index: 30;
+      display: grid;
+      justify-items: center;
+      gap: var(--space-2xs);
+      padding: var(--space-xs) 0.4rem;
+      background-color: var(--color-surface);
+      border: var(--border-thin);
+      border-radius: var(--radius-pill);
+      box-shadow: var(--shadow-paper);
+      transform: translateY(-50%);
+    }
+  }
+
+  .dots__counter {
+    color: var(--color-muted);
+    font-family: var(--font-heading);
+    font-size: var(--text-xs);
+    font-style: italic;
+    line-height: 1.2;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    writing-mode: vertical-rl; /* вузько, як підпис на корінці */
+    transform: rotate(180deg);
+  }
+
+  .dots__list {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Поле для кліку 24px, сама крапка — 8px */
+  .dots__link {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .dots__link::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border: 1px solid var(--color-muted);
+    border-radius: var(--radius-pill);
+    transition:
+      height var(--duration-base) var(--ease-out),
+      background-color var(--duration-base) var(--ease-out);
+  }
+
+  /* Переглянуті — заповнені, активна — витягнута, як у слайдері */
+  .dots__link.is-seen::before {
+    background-color: var(--color-muted);
+  }
+
+  .dots__link[aria-current='true']::before {
+    height: 1.25rem;
+    background-color: var(--color-accent-strong);
+    border-color: var(--color-accent-strong);
+  }
+
+  /* Назва секції — при наведенні або фокусі */
+  .dots__label {
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 0.75rem);
+    padding: 0.2rem 0.6rem;
+    background-color: var(--color-text);
+    border-radius: var(--radius-s);
+    color: var(--color-bg);
+    font-size: var(--text-xs);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(4px, -50%);
+    transition:
+      opacity var(--duration-fast) var(--ease-out),
+      transform var(--duration-fast) var(--ease-out);
+  }
+
+  .dots__link:hover .dots__label,
+  .dots__link:focus-visible .dots__label {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+</style>
+
+<script>
+  const dots = [...document.querySelectorAll<HTMLAnchorElement>('[data-dot]')];
+  const sections = dots
+    .map((dot) => document.getElementById(dot.dataset.dot ?? ''))
+    .filter((el): el is HTMLElement => el !== null);
+  const counters = document.querySelectorAll<HTMLElement>('[data-progress-counter]');
+  const line = document.querySelector<HTMLElement>('[data-progress-line]');
+  const navLinks = document.querySelectorAll<HTMLElement>('[data-nav-link]');
+  const total = sections.length;
+  const pad = (n: number) => String(n).padStart(2, '0');
+
+  const setActive = (index: number) => {
+    const id = sections[index].id;
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('is-seen', i < index);
+      if (i === index) dot.setAttribute('aria-current', 'true');
+      else dot.removeAttribute('aria-current');
+    });
+    counters.forEach((el) => {
+      el.hidden = false;
+      el.textContent = `${pad(index + 1)} / ${pad(total)}`;
+    });
+    if (line) {
+      line.hidden = false;
+      line.style.setProperty('--progress', String((index + 1) / total));
+    }
+    navLinks.forEach((link) => link.classList.toggle('is-active', link.dataset.navLink === id));
+  };
+
+  if (total > 1 && 'IntersectionObserver' in window) {
+    // Активна — секція, що перетинає вузьку смугу трохи вище середини екрана.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(sections.indexOf(entry.target as HTMLElement));
+        }
+      },
+      { rootMargin: '-45% 0px -54% 0px' },
+    );
+    sections.forEach((section) => observer.observe(section));
+    setActive(0);
+  }
+</script>

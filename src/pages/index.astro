@@ -1,0 +1,39 @@
+---
+import About from '../components/About.astro';
+import Audience from '../components/Audience.astro';
+import Faq from '../components/Faq.astro';
+import FinalCta from '../components/FinalCta.astro';
+import Hero from '../components/Hero.astro';
+import Lesson from '../components/Lesson.astro';
+import Reviews from '../components/Reviews.astro';
+import SectionDots from '../components/SectionDots.astro';
+import StickyCta from '../components/StickyCta.astro';
+import { FAQ } from '../data/faq';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// FAQPage — з тих самих даних, що й блок FAQ на сторінці.
+const faqJsonLd = {
+  '@type': 'FAQPage',
+  '@id': new URL('/#faq', Astro.site).href,
+  mainEntity: FAQ.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
+  })),
+};
+---
+
+<BaseLayout jsonLd={[faqJsonLd]}>
+  <!-- Секцію «Відео» прибрано (рішення 2026-11-10). Хедер і футер — у BaseLayout. -->
+  <main id="main">
+    <Hero />
+    <About />
+    <Audience />
+    <Lesson />
+    <Reviews />
+    <Faq />
+    <FinalCta />
+  </main>
+  <StickyCta />
+  <SectionDots />
+</BaseLayout>

@@ -1,0 +1,17 @@
+---
+// Головна дія сайту: кнопка запису → Instagram Direct (нова вкладка).
+// Telegram — тільки у футері (рішення 2026-11-10). Стилі — `.button` у global.css.
+import { LINKS } from '../data/site';
+import InstagramIcon from './icons/InstagramIcon.astro';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<a class:list={['button', className]} href={LINKS.instagram} target="_blank" rel="noopener">
+  <InstagramIcon />
+  <slot>Записатись на безкоштовний урок</slot>
+</a>
