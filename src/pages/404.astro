@@ -1,0 +1,51 @@
+---
+// Сторінка 404: GitHub Pages віддає dist/404.html для будь-якої неіснуючої адреси.
+import CtaButton from '../components/CtaButton.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Сторінку не знайдено | Sofii Violin" description="Такої сторінки немає на сайті Sofii Violin." noindex>
+  <main id="main" class="not-found">
+    <div class="container not-found__inner">
+      <p class="eyebrow">Помилка 404</p>
+      <h1 class="section-title">Такої сторінки <em>немає</em></h1>
+      <p class="not-found__text">
+        Можливо, посилання застаріло або в адресі є помилка. Поверніться на головну — там усе про уроки скрипки.
+      </p>
+      <div class="not-found__actions">
+        <a class="text-cta" href="/">
+          На головну <span class="nowrap"
+            ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M4 12h15M13 6l6 6-6 6" />
+            </svg></span
+          >
+        </a>
+        <CtaButton />
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: grid;
+    align-content: center;
+    min-height: calc(100svh - var(--header-h));
+    padding-block: var(--space-2xl);
+  }
+
+  .not-found__text {
+    max-width: 34rem;
+    margin-top: var(--space-m);
+    color: var(--color-muted);
+    font-size: var(--text-lg);
+  }
+
+  .not-found__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-m) var(--space-l);
+    margin-top: var(--space-l);
+  }
+</style>
