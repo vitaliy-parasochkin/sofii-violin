@@ -3,7 +3,7 @@ import { Font } from 'astro:assets';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { withBase } from '../lib/url';
-import { ANALYTICS, LINKS, OG_IMAGE, SITE, TEACHER } from '../data/site';
+import { ANALYTICS, LINKS, OG_IMAGE, SITE, TEACHER, VERIFICATION } from '../data/site';
 import '../styles/global.css';
 
 type JsonLdNode = Record<string, unknown>;
@@ -110,6 +110,7 @@ const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+    <meta name="google-site-verification" content={VERIFICATION.google} />
 
     <!-- Шрифти: self-hosted через Astro Fonts API. Preload — лише Lora (кирилиця, normal) для H1 у hero. -->
     <Font cssVariable="--font-heading" preload={[{ subset: 'cyrillic', style: 'normal', weight: 500 }]} />

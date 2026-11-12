@@ -29,6 +29,11 @@ export const ANALYTICS = {
   umamiWebsiteId: '4736ac03-eeb4-4f0d-90c2-a9bef5da4f28',
 } as const;
 
+/** Підтвердження власності сайту. Не видаляти: без тегу Search Console втратить доступ. */
+export const VERIFICATION = {
+  google: 'cy554oMDRihapguL43w4qwpXUw1BpKc1hDtMb_Osh6o',
+} as const;
+
 /** Нікнейми — показуємо текстом, щоб Софію можна було знайти і вручну. */
 export const HANDLES = {
   instagram: '@sofii_violin',
