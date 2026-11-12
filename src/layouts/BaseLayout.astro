@@ -3,7 +3,7 @@ import { Font } from 'astro:assets';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { withBase } from '../lib/url';
-import { LINKS, OG_IMAGE, SITE, TEACHER } from '../data/site';
+import { ANALYTICS, LINKS, OG_IMAGE, SITE, TEACHER } from '../data/site';
 import '../styles/global.css';
 
 type JsonLdNode = Record<string, unknown>;
@@ -142,6 +142,17 @@ const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c
     <meta name="twitter:image:alt" content={ogImage.alt} />
 
     <script type="application/ld+json" set:html={structuredDataJson} />
+
+    <!-- Аналітика Umami: без cookie; data-domains — рахуємо тільки справжній домен (не localhost/preview). -->
+    {ANALYTICS.umamiWebsiteId && (
+      <script
+        is:inline
+        defer
+        src="https://cloud.umami.is/script.js"
+        data-website-id={ANALYTICS.umamiWebsiteId}
+        data-domains={Astro.site?.hostname}
+      />
+    )}
     <slot name="head" />
   </head>
   <body>
@@ -168,6 +179,31 @@ const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c
         );
         items.forEach((el) => observer.observe(el));
       }
+    </script>
+
+    <script>
+      // Аналітика: кліки по Instagram і Telegram — де саме (секція) і що (кнопка чи текстове посилання).
+      import { LINKS } from '../data/site';
+
+      type Umami = { track: (event: string, data: Record<string, string>) => void };
+
+      const EVENTS: [string, string][] = [
+        [LINKS.instagram, 'instagram-click'],
+        [LINKS.telegram, 'telegram-click'],
+      ];
+
+      document.addEventListener('click', (e) => {
+        const link = (e.target as Element).closest?.('a[href]');
+        if (!(link instanceof HTMLAnchorElement)) return;
+        const event = EVENTS.find(([href]) => link.href.startsWith(href))?.[1];
+        // umami немає, якщо ID не задано або скрипт заблокував блокувальник реклами.
+        const umami = (window as unknown as { umami?: Umami }).umami;
+        if (!event || !umami) return;
+        umami.track(event, {
+          location: link.closest('section[id]')?.id ?? (link.closest('footer') ? 'footer' : 'page'),
+          element: link.classList.contains('button') ? 'button' : 'link',
+        });
+      });
     </script>
   </body>
 </html>

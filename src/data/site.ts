@@ -24,6 +24,11 @@ export const LINKS = {
   instagram: 'https://www.instagram.com/sofii_violin/',
 } as const;
 
+/** Umami Cloud (без cookie). Порожній ID — скрипт аналітики не підключається. */
+export const ANALYTICS = {
+  umamiWebsiteId: '4736ac03-eeb4-4f0d-90c2-a9bef5da4f28',
+} as const;
+
 /** Нікнейми — показуємо текстом, щоб Софію можна було знайти і вручну. */
 export const HANDLES = {
   instagram: '@sofii_violin',
