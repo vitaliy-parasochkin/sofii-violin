@@ -50,28 +50,44 @@ const shots = [
       <p class="reviews__intro">Справжні повідомлення від учнів і батьків — такі, як їх надіслали.</p>
     </header>
 
-    <ul class="reviews__shots">
-      {
-        shots.map((s) => (
-          <li>
-            <figure class="shot">
-              <a href={s.full.src} class="shot__link">
-                <Picture
-                  src={s.img}
-                  alt={s.alt}
-                  formats={['avif', 'webp']}
-                  widths={[320, 480, 640, 800]}
-                  sizes="(min-width: 75rem) 16rem, (min-width: 48rem) min(24.5rem, 40vw), min(78vw, 19rem)"
-                  class="shot__img"
-                />
-                <span class="visually-hidden"> — відкрити скрін повністю</span>
-              </a>
-              <figcaption class="shot__caption">{s.caption}</figcaption>
-            </figure>
-          </li>
-        ))
-      }
-    </ul>
+    <div class="slider" aria-roledescription="карусель" aria-label="Скріншоти відгуків" data-slider>
+      <div class="slider__track" data-slider-track>
+        {
+          shots.map((s, i) => (
+            <div class="slider__slide" role="group" aria-roledescription="слайд" aria-label={`${i + 1} з ${shots.length}`}>
+              <figure class="shot">
+                <a href={s.full.src} class="shot__link">
+                  <Picture
+                    src={s.img}
+                    alt={s.alt}
+                    formats={['avif', 'webp']}
+                    widths={[320, 480, 640, 800]}
+                    sizes="(min-width: 75rem) 23rem, (min-width: 64rem) 30vw, (min-width: 48rem) 44vw, 88vw"
+                    class="shot__img"
+                  />
+                  <span class="visually-hidden"> — відкрити скрін повністю</span>
+                </a>
+                <figcaption class="shot__caption">{s.caption}</figcaption>
+              </figure>
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- Стрілки показує скрипт; без JS слайдер гортається прокруткою -->
+      <div class="slider__controls" data-slider-controls hidden>
+        <button class="slider__btn" type="button" aria-label="Попередній відгук" data-slider-prev>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M20 12H5M11 6l-6 6 6 6" />
+          </svg>
+        </button>
+        <button class="slider__btn" type="button" aria-label="Наступний відгук" data-slider-next>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M4 12h15M13 6l6 6-6 6" />
+          </svg>
+        </button>
+      </div>
+    </div>
 
     <p class="reviews__outro">
       Хочете так само?{' '}
@@ -91,34 +107,79 @@ const shots = [
     color: var(--color-muted);
   }
 
-  /* ——— Телефон: стрічка, яку гортають пальцем ——— */
-  .reviews__shots {
-    display: flex;
-    gap: var(--space-m);
-    /* Стрічка на всю ширину екрана, перший скрін — на лінії тексту */
-    margin: var(--space-l) calc(-1 * var(--gutter)) 0;
-    padding: var(--space-s) var(--gutter) var(--space-m);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: var(--gutter);
-    list-style: none;
-    overscroll-behavior-x: contain;
+  /* ——— Слайдер: нативна прокрутка з прилипанням + стрілки (крок — один скрін, по колу) ———
+     Видно: телефон — 1, від 48rem — 2, від 64rem — 3. */
+  .slider {
+    --per-view: 1;
+    --slide-gap: var(--space-m);
+    margin-top: var(--space-l);
   }
 
-  .reviews__shots li {
-    flex: 0 0 min(80%, 20rem);
+  .slider__track {
+    display: flex;
+    gap: var(--slide-gap);
+    /* Поля, щоб нахил і тінь полароїдів не обрізались краєм прокрутки */
+    margin-inline: -0.75rem;
+    padding: var(--space-s) 0.75rem var(--space-m);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0.75rem;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .slider__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .slider__slide {
+    flex: 0 0 calc((100% - (var(--per-view) - 1) * var(--slide-gap)) / var(--per-view));
     scroll-snap-align: start;
   }
 
+  .slider__controls:not([hidden]) {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-s);
+    margin-top: var(--space-s);
+  }
+
+  .slider__btn {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-accent);
+    border-radius: 50%;
+    color: var(--color-accent-strong);
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .slider__btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .slider__btn:hover {
+    background-color: var(--color-accent-strong);
+    color: var(--color-on-accent);
+  }
+
+  /* ——— Полароїд ——— */
   .shot {
-    padding: 0.6rem 0.6rem 0;
+    padding: 0.75rem 0.75rem 0;
     background-color: var(--color-surface);
     box-shadow: var(--shadow-paper);
     transform: rotate(var(--tilt, -1deg));
     transition: transform var(--duration-base) var(--ease-out);
   }
 
-  .reviews__shots li:nth-child(even) .shot {
+  .slider__slide:nth-child(even) .shot {
     --tilt: 1deg;
   }
 
@@ -151,60 +212,109 @@ const shots = [
   .reviews__outro {
     margin-top: var(--space-l);
     color: var(--color-muted);
+    text-align: center;
   }
 
-  /* ——— Планшет і більше: великі полароїди 2×2, ряди зміщені ——— */
   @media (min-width: 48rem) {
-    .reviews__shots {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-xl) var(--space-xl);
-      max-width: 56rem;
-      margin: var(--space-xl) auto 0;
-      padding: 0;
-      overflow: visible;
-    }
-
-    .reviews__shots li {
-      max-width: 25.5rem;
-    }
-
-    .reviews__shots li:nth-child(even) {
-      justify-self: end;
+    .slider {
+      --per-view: 2;
+      --slide-gap: var(--space-l);
       margin-top: var(--space-xl);
-    }
-
-    .shot {
-      padding: 0.9rem 0.9rem 0;
-      --tilt: -1.5deg;
-    }
-
-    .reviews__shots li:nth-child(even) .shot {
-      --tilt: 1.5deg;
-    }
-
-    .reviews__outro {
-      margin-top: var(--space-xl);
-      text-align: center;
     }
   }
 
-  /* ——— Великий екран: 4 в ряд (не 3+1 — тому явний брейкпоінт, а не auto-fit).
-     З 1200px кожен скрін ≥ ~250px — текст на ньому ще читається. ——— */
-  @media (min-width: 75rem) {
-    .reviews__shots {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: var(--space-l);
-      max-width: none;
-    }
-
-    .reviews__shots li:nth-child(even) {
-      justify-self: stretch;
-      margin-top: var(--space-l);
-    }
-
-    .shot {
-      padding: 0.75rem 0.75rem 0;
+  @media (min-width: 64rem) {
+    .slider {
+      --per-view: 3;
     }
   }
 </style>
+
+<script>
+  // Нескінченний слайдер (loop): скрипт додає копії всіх скрінів перед і після справжніх.
+  // Після останнього «→» плавно показується копія першого, а потім — непомітний стрибок на справжній перший
+  // (так само в інший бік і при свайпі). Крок — один скрін. Без JS — звичайна прокрутка без копій.
+  for (const slider of document.querySelectorAll<HTMLElement>('[data-slider]')) {
+    const track = slider.querySelector<HTMLElement>('[data-slider-track]');
+    const controls = slider.querySelector<HTMLElement>('[data-slider-controls]');
+    const prev = slider.querySelector<HTMLButtonElement>('[data-slider-prev]');
+    const next = slider.querySelector<HTMLButtonElement>('[data-slider-next]');
+    if (!track || !controls || !prev || !next) continue;
+
+    const real = [...track.children] as HTMLElement[];
+    const n = real.length;
+    if (n < 2) continue;
+
+    // Копії — тільки для вигляду: приховані від скрінрідерів і клавіатури
+    const makeClone = (slide: HTMLElement) => {
+      const clone = slide.cloneNode(true) as HTMLElement;
+      clone.setAttribute('aria-hidden', 'true');
+      clone.removeAttribute('role');
+      clone.removeAttribute('aria-roledescription');
+      clone.removeAttribute('aria-label');
+      clone.inert = true;
+      return clone;
+    };
+    track.prepend(...real.map(makeClone));
+    track.append(...real.map(makeClone));
+
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const slides = track.children as HTMLCollectionOf<HTMLElement>;
+    // Дробовий крок (offsetLeft округлює до пікселя, і похибка накопичувалась би)
+    const step = () => slides[1].getBoundingClientRect().left - slides[0].getBoundingClientRect().left;
+
+    // Логічний індекс у треку з копіями: справжні скріни — n…2n−1
+    let index = n;
+    let moving = false;
+    let fallback = 0;
+
+    const scrollToIndex = (i: number, smooth: boolean) => {
+      index = i;
+      moving = smooth;
+      track.scrollTo({ left: i * step(), behavior: smooth && !reduceMotion.matches ? 'smooth' : 'instant' });
+      // Запасний варіант, якщо браузер не надішле кінця прокрутки
+      clearTimeout(fallback);
+      if (smooth) fallback = window.setTimeout(() => moving && settle(), 900);
+    };
+
+    // Якщо стоїмо на копії — непомітно переставляємо на той самий справжній скрін
+    const normalize = () => {
+      if (index < n) scrollToIndex(index + n, false);
+      else if (index >= 2 * n) scrollToIndex(index - n, false);
+    };
+
+    const go = (dir: 1 | -1) => {
+      if (!moving) index = Math.round(track.scrollLeft / step());
+      normalize();
+      scrollToIndex(index + dir, true);
+    };
+
+    function settle() {
+      clearTimeout(fallback);
+      moving = false;
+      index = Math.round(track.scrollLeft / step());
+      normalize();
+    }
+
+    if ('onscrollend' in window) {
+      track.addEventListener('scrollend', settle);
+    } else {
+      let timer = 0;
+      track.addEventListener(
+        'scroll',
+        () => {
+          clearTimeout(timer);
+          timer = window.setTimeout(settle, 150);
+        },
+        { passive: true },
+      );
+    }
+
+    prev.addEventListener('click', () => go(-1));
+    next.addEventListener('click', () => go(1));
+    addEventListener('resize', () => scrollToIndex(index, false));
+
+    scrollToIndex(n, false);
+    controls.hidden = false;
+  }
+</script>

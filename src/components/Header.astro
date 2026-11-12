@@ -1,19 +1,21 @@
 ---
-// Хедер для всіх сторінок (підключений у BaseLayout): бренд, меню секцій, кнопка запису.
-// Телефон і планшет: меню за кнопкою (popover — без JS). Від 64rem: меню в ряд.
-// Лічильник «03 / 07» і лінію прогресу оновлює скрипт у SectionDots.astro (тільки на головній).
+// Хедер для всіх сторінок (підключений у BaseLayout): логотип «S» ліворуч, меню секцій по центру.
+// На сторінці з hero — схований у самому верху сторінки і виїжджає, щойно користувач почав прокрутку (рішення 2026-11-12).
+// Без JS або без hero — звичайний sticky-хедер.
+// (без назви бренду, кнопки запису і лінії прогресу — рішення 2026-11-10).
+// Телефон і планшет: кнопка праворуч, меню на весь екран під хедером (popover — без JS). Від 64rem: меню в ряд.
+// Активний пункт меню оновлює скрипт у SectionProgress.astro (тільки на головній).
 import { SECTIONS } from '../data/sections';
-import { SITE } from '../data/site';
-import CtaButton from './CtaButton.astro';
+import Logo from './Logo.astro';
 
 const navItems = SECTIONS.filter((s) => s.nav);
 ---
 
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="site-header__brand" href="/#top">{SITE.name}</a>
-
-    <span class="site-header__counter" data-progress-counter aria-hidden="true" hidden></span>
+    <a class="site-header__logo" href="/#top" aria-label="Sofii Violin — на початок сторінки">
+      <Logo />
+    </a>
 
     <nav class="site-header__nav" aria-label="Розділи сторінки">
       <button class="site-header__menu-btn" type="button" popovertarget="site-menu" aria-label="Меню">
@@ -30,14 +32,9 @@ const navItems = SECTIONS.filter((s) => s.nav);
             </li>
           ))
         }
-        <li class="site-header__menu-cta">
-          <CtaButton class="site-header__cta">Записатись</CtaButton>
-        </li>
       </ul>
     </nav>
   </div>
-
-  <span class="site-header__progress" data-progress-line aria-hidden="true" hidden></span>
 </header>
 
 <style>
@@ -50,28 +47,47 @@ const navItems = SECTIONS.filter((s) => s.nav);
     border-bottom: var(--border-thin);
   }
 
+  /* ——— Сторінка з hero: фіксований, схований у самому верху сторінки ——— */
+  :global(html.js:has(.hero)) .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    translate: 0 -100%;
+    visibility: hidden;
+    transition:
+      translate var(--duration-base) var(--ease-out),
+      visibility 0s linear var(--duration-base);
+  }
+
+  :global(html.js:has(.hero)) .site-header.is-visible,
+  :global(html.js:has(.hero)) .site-header:has(:popover-open) {
+    translate: none;
+    visibility: visible;
+    box-shadow: 0 8px 24px -16px rgb(59 42 32 / 0.35);
+    transition:
+      translate var(--duration-base) var(--ease-out),
+      visibility 0s;
+  }
+
   .site-header__inner {
     display: flex;
     align-items: center;
-    gap: var(--space-s);
+    justify-content: space-between; /* телефон: логотип ліворуч, кнопка меню праворуч */
     height: var(--header-h);
   }
 
-  .site-header__brand {
-    margin-right: auto;
-    color: var(--color-text);
-    font-family: var(--font-heading);
-    font-size: var(--text-xl);
-    font-style: italic;
-    text-decoration: none;
+  .site-header__logo {
+    display: block;
+    border-radius: 10px;
+    transition: transform var(--duration-fast) var(--ease-out);
   }
 
-  .site-header__counter {
-    color: var(--color-muted);
-    font-family: var(--font-heading);
-    font-size: var(--text-sm);
-    font-style: italic;
-    font-variant-numeric: tabular-nums;
+  .site-header__logo :global(.logo) {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .site-header__logo:hover {
+    transform: rotate(-4deg);
   }
 
   /* ——— Кнопка меню (бургер → хрестик) ——— */
@@ -129,28 +145,59 @@ const navItems = SECTIONS.filter((s) => s.nav);
     transform: translateY(-6px) rotate(-45deg);
   }
 
-  /* ——— Меню-панель (popover) під хедером ——— */
+  /* ——— Меню на весь екран (popover) ———
+     Від низу хедера до низу екрана: хедер з хрестиком лишається видимим над меню. */
   .site-header__menu {
     position: fixed;
-    inset: var(--header-h) 0 auto;
+    inset: var(--header-h) 0 0;
     width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
     margin: 0;
-    padding: var(--space-s) var(--gutter) var(--space-m);
+    padding: var(--space-l) var(--gutter) calc(var(--space-xl) + env(safe-area-inset-bottom));
+    overflow-y: auto;
     list-style: none;
     background-color: var(--color-bg);
+    background-image: var(--paper-texture);
     border: 0;
-    border-bottom: var(--border-thin);
-    box-shadow: var(--shadow-paper);
     color: var(--color-text);
+    text-align: center;
   }
 
-  .site-header__menu a:not(.button) {
+  @media (max-width: 63.99rem) {
+    .site-header__menu:popover-open {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--space-2xs);
+    }
+  }
+
+  .site-header__menu a {
     display: block;
     padding-block: var(--space-xs);
     color: var(--color-text);
     font-family: var(--font-heading);
-    font-size: var(--text-xl);
+    font-size: var(--text-2xl);
     text-decoration: none;
+  }
+
+  /* Поки меню відкрите, сторінка під ним не прокручується */
+  :global(html:has(#site-menu:popover-open)) {
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .site-header__menu:popover-open {
+      animation: menu-in var(--duration-base) var(--ease-out);
+    }
+  }
+
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+    }
   }
 
   .site-header__menu a.is-active {
@@ -158,29 +205,14 @@ const navItems = SECTIONS.filter((s) => s.nav);
     font-style: italic;
   }
 
-  .site-header__menu-cta {
-    margin-top: var(--space-s);
-  }
-
-  .site-header__menu :global(.site-header__cta) {
-    width: 100%;
-  }
-
-  /* ——— Лінія прогресу секцій ——— */
-  .site-header__progress {
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: var(--color-accent);
-    transform: scaleX(var(--progress, 0));
-    transform-origin: left;
-    transition: transform var(--duration-base) var(--ease-out);
-  }
-
   /* ——— Широкий екран: меню в ряд, без кнопки ——— */
   @media (min-width: 64rem) {
+    /* Три колонки: логотип | меню рівно по центру сторінки | порожня (для симетрії) */
+    .site-header__inner {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+    }
+
     .site-header__menu-btn {
       display: none;
     }
@@ -189,21 +221,27 @@ const navItems = SECTIONS.filter((s) => s.nav);
     .site-header__menu {
       position: static;
       display: flex;
+      flex-direction: row;
       align-items: center;
-      gap: var(--space-m);
+      gap: var(--space-l);
       padding: 0;
+      overflow: visible;
       background: none;
       border: 0;
       box-shadow: none;
     }
 
-    .site-header__menu a:not(.button) {
+    .site-header__menu a {
       padding-block: var(--space-2xs);
       font-family: var(--font-body);
       font-size: var(--text-sm);
     }
 
-    .site-header__menu a:not(.button):hover {
+    :global(html:has(#site-menu:popover-open)) {
+      overflow: visible;
+    }
+
+    .site-header__menu a:hover {
       color: var(--color-accent-strong);
     }
 
@@ -212,34 +250,27 @@ const navItems = SECTIONS.filter((s) => s.nav);
       text-decoration: underline;
       text-decoration-color: var(--color-accent);
     }
-
-    .site-header__menu-cta {
-      margin-top: 0;
-      margin-left: var(--space-2xs);
-    }
-
-    .site-header__menu :global(.site-header__cta) {
-      width: auto;
-      min-height: 2.5rem;
-      padding: 0.5rem 1.1rem;
-      font-size: var(--text-sm);
-      box-shadow: none;
-    }
-
-    .site-header__counter {
-      order: 1; /* після меню */
-    }
-  }
-
-  /* Від 80rem лічильник — у крапках збоку */
-  @media (min-width: 80rem) {
-    .site-header__counter {
-      display: none;
-    }
   }
 </style>
 
 <script>
+  // Показати хедер, щойно користувач почав прокрутку; сховати, коли повернувся в самий верх.
+  // Поріг 8px — щоб випадковий мікрорух на тачпаді не смикав хедер.
+  const header = document.querySelector<HTMLElement>('.site-header');
+  if (header && document.querySelector('.hero')) {
+    let frame = 0;
+    const update = () => header.classList.toggle('is-visible', scrollY > 8);
+    addEventListener(
+      'scroll',
+      () => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(update);
+      },
+      { passive: true },
+    );
+    update(); // сторінку могли відкрити вже прокрученою (якір, перезавантаження)
+  }
+
   // Закрити меню після вибору пункту (плавна прокрутка — через CSS).
   const menu = document.getElementById('site-menu');
   menu?.addEventListener('click', (event) => {

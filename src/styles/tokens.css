@@ -54,6 +54,8 @@
 
   /* Висота sticky-хедера (відступ для якорів і sticky-заголовків) */
   --header-h: 3.75rem;
+  /* Скільки місця хедер займає над hero: 0, коли хедер ховається на hero (див. global.css) */
+  --header-space: var(--header-h);
 
   /* Сітка */
   --container-max: 75rem; /* 1200px */

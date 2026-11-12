@@ -1,0 +1,29 @@
+---
+// Тільки скрипт (тільки на головній): активний пункт меню в хедері.
+// Секції — усі <section id> верхнього рівня в <main>.
+---
+
+<script>
+  const sections = [...document.querySelectorAll<HTMLElement>('main > section[id]')];
+  const navLinks = document.querySelectorAll<HTMLElement>('[data-nav-link]');
+  const total = sections.length;
+
+  const setActive = (index: number) => {
+    const id = sections[index].id;
+    navLinks.forEach((link) => link.classList.toggle('is-active', link.dataset.navLink === id));
+  };
+
+  if (total > 1 && 'IntersectionObserver' in window) {
+    // Активна — секція, що перетинає вузьку смугу трохи вище середини екрана.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(sections.indexOf(entry.target as HTMLElement));
+        }
+      },
+      { rootMargin: '-45% 0px -54% 0px' },
+    );
+    sections.forEach((section) => observer.observe(section));
+    setActive(0);
+  }
+</script>

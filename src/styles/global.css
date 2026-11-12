@@ -24,27 +24,9 @@ html {
   }
 }
 
-/*
- * Прокрутка «по екранах» — тільки на широкому й достатньо високому екрані.
- * proximity: доводимо до початку секції лише поруч із нею, довгі секції читаються вільно.
- * Фінальний CTA без min-height — під ним одразу видно футер.
- */
-@media (min-width: 64rem) and (min-height: 40rem) {
-  html {
-    scroll-snap-type: y proximity;
-  }
-
-  main > .hero,
-  main > .section {
-    scroll-snap-align: start;
-  }
-
-  main > .hero,
-  main > .section:not(.final-cta) {
-    display: grid;
-    align-content: center;
-    min-height: calc(100svh - var(--header-h));
-  }
+/* На сторінці з hero хедер фіксований і схований у самому верху (Header.astro) — місця не займає */
+html.js:has(.hero) {
+  --header-space: 0px;
 }
 
 body {

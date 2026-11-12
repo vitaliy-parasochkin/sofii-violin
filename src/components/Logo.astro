@@ -1,0 +1,36 @@
+---
+// Логотип — та сама «S», що у favicon (public/favicon.svg).
+// Inline SVG, щоб літера малювалась шрифтом Lora сайту (у <img> вебшрифти не працюють).
+// Кольори й шрифт — через CSS з токенів теми (var() в атрибутах SVG підтримується не всюди).
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg class:list={['logo', className]} viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false">
+  <rect class="logo__bg" width="64" height="64" rx="14" />
+  <rect class="logo__frame" x="2" y="2" width="60" height="60" rx="12" />
+  <text class="logo__letter" x="32" y="47" text-anchor="middle">S</text>
+</svg>
+
+<style>
+  .logo__bg {
+    fill: var(--color-bg);
+  }
+
+  .logo__frame {
+    fill: none;
+    stroke: var(--color-line);
+    stroke-width: 2;
+  }
+
+  .logo__letter {
+    fill: var(--color-accent-strong);
+    font-family: var(--font-heading);
+    font-size: 44px;
+    font-style: italic;
+    font-weight: 500;
+  }
+</style>
