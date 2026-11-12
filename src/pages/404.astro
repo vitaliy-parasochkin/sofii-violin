@@ -2,6 +2,7 @@
 // Сторінка 404: GitHub Pages віддає dist/404.html для будь-якої неіснуючої адреси.
 import CtaButton from '../components/CtaButton.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/url';
 ---
 
 <BaseLayout title="Сторінку не знайдено | Sofii Violin" description="Такої сторінки немає на сайті Sofii Violin." noindex>
@@ -13,7 +14,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         Можливо, посилання застаріло або в адресі є помилка. Поверніться на головну — там усе про уроки скрипки.
       </p>
       <div class="not-found__actions">
-        <a class="text-cta" href="/">
+        <a class="text-cta" href={withBase('/')}>
           На головну <span class="nowrap"
             ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
               <path d="M4 12h15M13 6l6 6-6 6" />

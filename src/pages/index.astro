@@ -9,11 +9,12 @@ import Reviews from '../components/Reviews.astro';
 import SectionProgress from '../components/SectionProgress.astro';
 import { FAQ } from '../data/faq';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/url';
 
 // FAQPage — з тих самих даних, що й блок FAQ на сторінці.
 const faqJsonLd = {
   '@type': 'FAQPage',
-  '@id': new URL('/#faq', Astro.site).href,
+  '@id': new URL(withBase('/#faq'), Astro.site).href,
   mainEntity: FAQ.map((item) => ({
     '@type': 'Question',
     name: item.question,

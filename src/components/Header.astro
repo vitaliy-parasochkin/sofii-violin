@@ -6,6 +6,7 @@
 // Телефон і планшет: кнопка праворуч, меню на весь екран під хедером (popover — без JS). Від 64rem: меню в ряд.
 // Активний пункт меню оновлює скрипт у SectionProgress.astro (тільки на головній).
 import { SECTIONS } from '../data/sections';
+import { withBase } from '../lib/url';
 import Logo from './Logo.astro';
 
 const navItems = SECTIONS.filter((s) => s.nav);
@@ -13,7 +14,7 @@ const navItems = SECTIONS.filter((s) => s.nav);
 
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="site-header__logo" href="/#top" aria-label="Sofii Violin — на початок сторінки">
+    <a class="site-header__logo" href={withBase('/#top')} aria-label="Sofii Violin — на початок сторінки">
       <Logo />
     </a>
 
@@ -26,7 +27,7 @@ const navItems = SECTIONS.filter((s) => s.nav);
         {
           navItems.map((item) => (
             <li>
-              <a href={`/#${item.id}`} data-nav-link={item.id}>
+              <a href={withBase(`/#${item.id}`)} data-nav-link={item.id}>
                 {item.label}
               </a>
             </li>
