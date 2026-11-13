@@ -1,0 +1,73 @@
+---
+// Гілочка з квітами (перегукується з квітучим деревом на фото) — декоративна, без змісту для скрінрідерів.
+// Стебло й листя — currentColor (оливковий), квіти — теракотові. Розмір і позицію задає батьківський компонент через class.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// Квітки: центр і масштаб; пелюстки — 5 крапель навколо центру.
+const flowers = [
+  { x: 62, y: 44, s: 1, r: 8 },
+  { x: 146, y: 66, s: 0.85, r: -14 },
+  { x: 128, y: 22, s: 0.7, r: 30 },
+];
+const petals = [0, 72, 144, 216, 288];
+---
+
+<svg
+  class:list={['blossom', className]}
+  viewBox="0 0 170 124"
+  width="170"
+  height="124"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.25"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  <!-- Гілка і пагінці -->
+  <path d="M4 120C34 104 60 90 88 70S132 34 160 8" />
+  <path d="M70 82C70 68 66 56 62 48" />
+  <path d="M116 46C126 50 136 56 142 62" />
+  <path d="M108 52C114 40 120 32 126 26" />
+  <!-- Листки -->
+  <path d="M32 106C26 94 28 84 36 76C40 88 38 98 32 106Z" />
+  <path d="M32 106C34 94 35 85 36 76" stroke-width="0.75" />
+  <path d="M90 70C102 72 110 80 112 90C100 88 92 80 90 70Z" />
+  <path d="M90 70C98 76 105 82 112 90" stroke-width="0.75" />
+  <!-- Бруньки -->
+  <path d="M160 8C164 4 168 4 168 8C166 12 162 12 160 8Z" class="blossom__flower" />
+  <path d="M46 98C46 92 50 90 52 92C52 96 50 98 46 98Z" class="blossom__flower" />
+  <!-- Пелюстки, що злітають з квітів -->
+  <g class="blossom__flower">
+    <path d="M128 96C124 92 124 87 128 86C131 88 131 92 128 96Z" transform="rotate(-30 128 91)" />
+    <path d="M152 108C148 104 148 99 152 98C155 100 155 104 152 108Z" transform="rotate(40 152 103)" />
+    <path d="M116 114C112 110 112 105 116 104C119 106 119 110 116 114Z" transform="rotate(75 116 109)" />
+  </g>
+  <!-- Квіти -->
+  {
+    flowers.map((f) => (
+      <g class="blossom__flower" transform={`translate(${f.x} ${f.y}) rotate(${f.r}) scale(${f.s})`}>
+        {petals.map((a) => (
+          <path transform={`rotate(${a})`} d="M0 -2C-5 -6 -6 -12 -3 -15C-1 -16.5 1 -16.5 3 -15C6 -12 5 -6 0 -2Z" />
+        ))}
+        <circle r="1.6" fill="currentColor" stroke="none" />
+      </g>
+    ))
+  }
+</svg>
+
+<style>
+  .blossom {
+    color: var(--color-accent-2);
+    pointer-events: none;
+  }
+
+  .blossom__flower {
+    color: var(--color-accent);
+  }
+</style>

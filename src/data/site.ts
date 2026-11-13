@@ -34,11 +34,6 @@ export const VERIFICATION = {
   google: 'cy554oMDRihapguL43w4qwpXUw1BpKc1hDtMb_Osh6o',
 } as const;
 
-/** Нікнейми — показуємо текстом, щоб Софію можна було знайти і вручну. */
-export const HANDLES = {
-  instagram: '@sofii_violin',
-} as const;
-
 export const OG_IMAGE = {
   src: '/og-image.jpg',
   width: 1200,

@@ -1,7 +1,7 @@
 ---
-// Логотип — та сама «S», що у favicon (public/favicon.svg).
-// Inline SVG, щоб літера малювалась шрифтом Lora сайту (у <img> вебшрифти не працюють).
-// Кольори й шрифт — через CSS з токенів теми (var() в атрибутах SVG підтримується не всюди).
+// Логотип — скрипковий ключ, «живіт» якого — літера S: петля зверху, похилий штиль, хвостик із крапкою.
+// Той самий знак, що у favicon (public/favicon.svg). Контури, а не шрифт, — однаково всюди.
+// Кольори — через CSS з токенів теми (var() в атрибутах SVG підтримується не всюди).
 interface Props {
   class?: string;
 }
@@ -12,7 +12,17 @@ const { class: className } = Astro.props;
 <svg class:list={['logo', className]} viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false">
   <rect class="logo__bg" width="64" height="64" rx="14" />
   <rect class="logo__frame" x="2" y="2" width="60" height="60" rx="12" />
-  <text class="logo__letter" x="32" y="47" text-anchor="middle">S</text>
+  <g transform="translate(32 32) scale(0.86) translate(-31.5 -31)">
+    <!-- Штиль ключа з петлею зверху, «живіт» у формі S, хвостик з крапкою -->
+    <path class="logo__line" d="M30.5 55L35.5 8C36 2.5 41.5 1 43 5.5C44.5 10.5 38.5 16.5 31.5 20.5" stroke-width="3" />
+    <path
+      class="logo__line"
+      d="M31.5 20.5C23 25 18 28.5 19.5 33.5C21 38 29 38 35.5 40C43 42.5 45.5 46.5 42.5 50.5C39.5 54 32.5 53.5 28 50.5"
+      stroke-width="5"
+    />
+    <path class="logo__line" d="M30.5 55C30 60.5 24.5 62 22 59" stroke-width="3" />
+    <circle class="logo__dot" cx="22.8" cy="57.5" r="3.6" />
+  </g>
 </svg>
 
 <style>
@@ -26,11 +36,14 @@ const { class: className } = Astro.props;
     stroke-width: 2;
   }
 
-  .logo__letter {
+  .logo__line {
+    fill: none;
+    stroke: var(--color-accent-strong);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .logo__dot {
     fill: var(--color-accent-strong);
-    font-family: var(--font-heading);
-    font-size: 44px;
-    font-style: italic;
-    font-weight: 500;
   }
 </style>

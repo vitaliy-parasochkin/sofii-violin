@@ -1,6 +1,5 @@
 ---
 import { LINKS, TEACHER } from '../data/site';
-import Sprig from './Sprig.astro';
 ---
 
 <section class="section audience" id="dlia-koho" aria-labelledby="audience-title">
@@ -11,7 +10,6 @@ import Sprig from './Sprig.astro';
       <p class="audience__intro">
         Заняття індивідуальні, тому програму я будую під вас: під ваш рівень, темп і музику, яку хочеться грати.
       </p>
-      <Sprig class="audience__sprig" />
     </header>
 
     <div class="audience__list">
@@ -65,11 +63,6 @@ import Sprig from './Sprig.astro';
     color: var(--color-muted);
   }
 
-  /* :global — клас передається в дочірній компонент */
-  .audience__head :global(.audience__sprig) {
-    display: none;
-  }
-
   /* ——— Список ——— */
   .audience__item {
     display: grid;
@@ -113,14 +106,6 @@ import Sprig from './Sprig.astro';
     .audience__head {
       position: sticky;
       top: calc(var(--header-h) + var(--space-m));
-    }
-
-    .audience__head :global(.audience__sprig) {
-      display: block;
-      width: 4.5rem;
-      height: auto;
-      margin-top: var(--space-l);
-      transform: rotate(-8deg);
     }
 
     .audience__item:first-child {

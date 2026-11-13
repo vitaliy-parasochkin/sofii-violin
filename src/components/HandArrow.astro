@@ -1,0 +1,33 @@
+---
+// Стрілочка «від руки» з петлею, вказує ліворуч — декоративна, без змісту для скрінрідерів.
+// Колір — currentColor (за замовчуванням теракотовий). Розмір і позицію задає батьківський компонент через class.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+  class:list={['hand-arrow', className]}
+  viewBox="0 0 96 56"
+  width="96"
+  height="56"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d="M90 10C76 2 60 8 62 20C64 30 76 28 74 20C71 10 50 16 36 30C28 38 18 42 8 42" />
+  <path d="M17 34L8 42L18 48" />
+</svg>
+
+<style>
+  .hand-arrow {
+    color: var(--color-accent);
+    pointer-events: none;
+  }
+</style>

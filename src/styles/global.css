@@ -157,6 +157,9 @@ a {
   font-family: var(--font-heading);
   font-size: var(--text-lg);
   font-style: italic;
+  /* Буває й заголовком секції (h2) — без жирності й щільного інтерліньяжу заголовків */
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
 }
 
 .eyebrow::before {
@@ -239,6 +242,34 @@ a {
 
 .nowrap {
   white-space: nowrap;
+}
+
+/*
+ * Смужка напівпрозорого скотчу на верхньому краї полароїда — «фото приклеєне до дошки».
+ * Нахил — через --tape-tilt, зсув від центру — через --tape-shift.
+ */
+.taped {
+  position: relative;
+}
+
+.taped::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: -0.8rem;
+  left: calc(50% + var(--tape-shift, 0rem));
+  width: 5.5rem;
+  height: 1.6rem;
+  background:
+    linear-gradient(to bottom, rgb(255 255 255 / 0.3), rgb(255 255 255 / 0) 60%),
+    rgb(205 176 138 / 0.55);
+  transform: translateX(-50%) rotate(var(--tape-tilt, -3deg));
+  /* Нерівно відірвані краї зліва і справа */
+  clip-path: polygon(
+    0 6%, 4% 22%, 1% 40%, 4% 58%, 0 76%, 3% 100%,
+    100% 96%, 96% 78%, 100% 60%, 97% 42%, 100% 22%, 96% 0
+  );
+  pointer-events: none;
 }
 
 .visually-hidden {

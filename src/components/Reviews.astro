@@ -45,9 +45,7 @@ const shots = [
 <section class="section reviews" id="vidguky" aria-labelledby="reviews-title">
   <div class="container">
     <header class="reviews__head">
-      <p class="eyebrow">Відгуки</p>
-      <h2 id="reviews-title" class="section-title">Що кажуть <em>учні й батьки</em></h2>
-      <p class="reviews__intro">Справжні повідомлення від учнів і батьків — такі, як їх надіслали.</p>
+      <h2 id="reviews-title" class="eyebrow">Відгуки</h2>
     </header>
 
     <div class="slider" aria-roledescription="карусель" aria-label="Скріншоти відгуків" data-slider>
@@ -55,7 +53,7 @@ const shots = [
         {
           shots.map((s, i) => (
             <div class="slider__slide" role="group" aria-roledescription="слайд" aria-label={`${i + 1} з ${shots.length}`}>
-              <figure class="shot">
+              <figure class="shot taped">
                 <a href={s.full.src} class="shot__link">
                   <Picture
                     src={s.img}
@@ -101,12 +99,6 @@ const shots = [
 </section>
 
 <style>
-  .reviews__intro {
-    max-width: 32rem;
-    margin-top: var(--space-s);
-    color: var(--color-muted);
-  }
-
   /* ——— Слайдер: нативна прокрутка з прилипанням + стрілки (крок — один скрін, по колу) ———
      Видно: телефон — 1, від 48rem — 2, від 64rem — 3. */
   .slider {
@@ -181,6 +173,8 @@ const shots = [
 
   .slider__slide:nth-child(even) .shot {
     --tilt: 1deg;
+    --tape-tilt: 4deg;
+    --tape-shift: 1.5rem;
   }
 
   .shot__link {

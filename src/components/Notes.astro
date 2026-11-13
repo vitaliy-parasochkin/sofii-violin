@@ -1,0 +1,41 @@
+---
+// Пара восьмих під ребром і окрема восьма з прапорцем — декоративні, без змісту для скрінрідерів.
+// Колір — currentColor (за замовчуванням теракотовий). Розмір і позицію задає батьківський компонент через class.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+  class:list={['notes', className]}
+  viewBox="0 0 150 120"
+  width="150"
+  height="120"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  <!-- Пара восьмих: голівки, штилі, ребро -->
+  <ellipse cx="18" cy="96" rx="9" ry="6.5" transform="rotate(-22 18 96)" fill="currentColor" stroke="none" />
+  <ellipse cx="66" cy="84" rx="9" ry="6.5" transform="rotate(-22 66 84)" fill="currentColor" stroke="none" />
+  <path d="M26 92V30" />
+  <path d="M74 80V18" />
+  <path d="M26 30L74 18L74 26L26 38Z" fill="currentColor" stroke="none" />
+  <!-- Окрема восьма з прапорцем -->
+  <ellipse cx="114" cy="62" rx="7.5" ry="5.4" transform="rotate(-22 114 62)" fill="currentColor" stroke="none" />
+  <path d="M120.5 58.5V12" />
+  <path d="M120.5 12C122 22 134 26 136 36C137.5 43 134 48 131 52" />
+</svg>
+
+<style>
+  .notes {
+    color: var(--color-accent);
+    pointer-events: none;
+  }
+</style>

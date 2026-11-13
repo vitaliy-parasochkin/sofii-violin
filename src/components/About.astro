@@ -1,19 +1,27 @@
 ---
-// Текстова секція без фото (рішення 2026-11-12: єдине якісне фото — у hero, повтор не потрібен).
-import { LINKS, TEACHER } from '../data/site';
+import { Picture } from 'astro:assets';
+import aboutPhoto from '../assets/photos/aboutMe.jpg';
+import { LINKS } from '../data/site';
+import Blossom from './Blossom.astro';
 ---
 
 <section class="section section--sand about" id="pro-mene" aria-labelledby="about-title">
   <div class="container about__grid">
     <header class="about__head">
-      <p class="eyebrow">Про мене</p>
-      <h2 id="about-title" class="section-title">Скрипка без <em>академічної суворості</em></h2>
+      <!-- Великий заголовок прибрано: заголовком секції лишається підпис «Про мене» -->
+      <h2 id="about-title" class="eyebrow about__title">Про мене</h2>
     </header>
 
-    <ul class="about__stats">
-      <li><span class="about__num">{TEACHER.yearsPlaying}</span> років граю на скрипці</li>
-      <li><span class="about__num">{TEACHER.yearsTeaching}</span> років навчаю дорослих і дітей</li>
-    </ul>
+    <figure class="about__photo taped">
+      <Picture
+        src={aboutPhoto}
+        alt="Софія усміхається і тримає скрипку на тлі квітучого дерева"
+        formats={['avif', 'webp']}
+        widths={[360, 540, 720, 960, 1440]}
+        sizes="(min-width: 75rem) 29rem, (min-width: 48rem) 40vw, min(88vw, 22rem)"
+        class="about__photo-img"
+      />
+    </figure>
 
     <div class="about__body">
       <p class="about__lead">
@@ -35,6 +43,9 @@ import { LINKS, TEACHER } from '../data/site';
       </a>
     </div>
   </div>
+
+  <!-- Гілочка лежить на стику з наступною секцією, у смузі відступів -->
+  <Blossom class="about__blossom" />
 </section>
 
 <style>
@@ -42,7 +53,7 @@ import { LINKS, TEACHER } from '../data/site';
     display: grid;
     grid-template-areas:
       'head'
-      'stats'
+      'photo'
       'body';
     gap: var(--space-l);
   }
@@ -51,29 +62,42 @@ import { LINKS, TEACHER } from '../data/site';
     grid-area: head;
   }
 
-  /* ——— Цифри ——— */
-  .about__stats {
-    grid-area: stats;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-m);
-    padding: var(--space-m) 0 0;
-    list-style: none;
-    border-top: var(--border-thin);
-    color: var(--color-muted);
-    font-size: var(--text-sm);
-    line-height: var(--leading-snug);
-    text-wrap: balance;
+  .about__title {
+    margin-bottom: 0;
   }
 
-  .about__num {
+  .about {
+    position: relative;
+    overflow-x: clip; /* гілочка заходить за правий край екрана */
+  }
+
+  /* :global — клас передається в дочірній компонент.
+     Половина гілочки — у нижньому відступі цієї секції, половина — у верхньому відступі наступної. */
+  .about :global(.about__blossom) {
+    position: absolute;
+    z-index: 1; /* над фоном наступної секції */
+    right: -1rem;
+    bottom: -2.75rem;
+    width: 6rem;
+    height: auto;
+    transform: rotate(-12deg);
+  }
+
+  /* ——— Фото: полароїд з нахилом і скотчем ——— */
+  .about__photo {
+    grid-area: photo;
+    justify-self: center;
+    width: min(100%, 22rem);
+    padding: 0.75rem 0.75rem 2rem;
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-paper);
+    transform: rotate(-1.5deg);
+  }
+
+  .about__photo :global(.about__photo-img) {
     display: block;
-    margin-bottom: var(--space-2xs);
-    color: var(--color-accent); /* великий текст */
-    font-family: var(--font-heading);
-    font-size: var(--text-display);
-    font-style: italic;
-    line-height: 1;
+    width: 100%;
+    height: auto;
   }
 
   /* ——— Текст ——— */
@@ -98,21 +122,27 @@ import { LINKS, TEACHER } from '../data/site';
     margin-top: var(--space-m);
   }
 
-  /* ——— Планшет і більше: заголовок і цифри зліва, текст-картка справа ——— */
+  /* ——— Планшет і більше: підпис зверху, під ним текст-картка зліва і фото справа ——— */
   @media (min-width: 48rem) {
     .about__grid {
-      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
       grid-template-areas:
-        'head  body'
-        'stats body';
-      grid-template-rows: auto 1fr;
+        'head head'
+        'body photo';
+      align-items: center;
       column-gap: var(--space-xl);
       row-gap: var(--space-l);
     }
 
-    .about__stats {
-      align-self: start;
-      grid-template-columns: 1fr;
+    .about__photo {
+      justify-self: stretch;
+      width: auto;
+    }
+
+    .about :global(.about__blossom) {
+      right: 0;
+      bottom: -3rem;
+      width: 9rem;
     }
 
     .about__body {
@@ -121,17 +151,6 @@ import { LINKS, TEACHER } from '../data/site';
       border: var(--border-thin);
       border-radius: var(--radius-s);
       box-shadow: var(--shadow-paper);
-    }
-  }
-
-  @media (min-width: 64rem) {
-    .about__stats {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    /* Картка трохи нижче за заголовок — асиметрія */
-    .about__body {
-      margin-top: var(--space-xl);
     }
   }
 </style>

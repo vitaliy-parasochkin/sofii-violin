@@ -2,13 +2,14 @@
 // JSON-LD FAQPage для цих питань формує сторінка (src/pages/index.astro) з тих самих даних.
 import { FAQ } from '../data/faq';
 import { LINKS } from '../data/site';
+import Clef from './Clef.astro';
+import Sprig from './Sprig.astro';
 ---
 
 <section class="section section--sand faq" id="faq" aria-labelledby="faq-title">
   <div class="container faq__grid">
     <header class="faq__head">
-      <p class="eyebrow">Питання</p>
-      <h2 id="faq-title" class="section-title">Часті <em>запитання</em></h2>
+      <h2 id="faq-title" class="eyebrow">Питання</h2>
       <p class="faq__intro">
         Не знайшли відповіді?
         <a class="text-cta" href={LINKS.instagram} target="_blank" rel="noopener">
@@ -33,9 +34,54 @@ import { LINKS } from '../data/site';
       }
     </div>
   </div>
+
+  <!-- Гілочка лежить на стику з секцією відгуків, у смузі відступів -->
+  <Sprig class="faq__sprig" />
+  <!-- Скрипковий ключ — у нижньому відступі, трохи заходить на футер -->
+  <Clef class="faq__clef" />
 </section>
 
 <style>
+  .faq {
+    position: relative;
+    overflow-x: clip; /* гілочка заходить за лівий край екрана */
+  }
+
+  /* :global — клас передається в дочірній компонент. Лежить майже горизонтально, стебло — з-за краю екрана */
+  .faq :global(.faq__sprig) {
+    position: absolute;
+    z-index: 1; /* над фоном попередньої секції */
+    top: -3.25rem;
+    left: -0.25rem;
+    width: 3rem;
+    height: auto;
+    transform: rotate(-112deg);
+    transform-origin: center;
+  }
+
+  /* Висота ключа менша за нижній відступ секції — не дістає до тексту навіть з розгорнутим останнім питанням */
+  .faq :global(.faq__clef) {
+    position: absolute;
+    z-index: 1; /* над фоном футера */
+    right: 12%;
+    bottom: -1rem;
+    width: 1.25rem;
+    height: auto;
+    transform: rotate(10deg);
+  }
+
+  @media (min-width: 48rem) {
+    .faq :global(.faq__clef) {
+      width: 1.5rem;
+    }
+
+    .faq :global(.faq__sprig) {
+      top: -5rem;
+      left: 2rem;
+      width: 4.5rem;
+    }
+  }
+
   .faq__grid {
     display: grid;
     gap: var(--space-l);

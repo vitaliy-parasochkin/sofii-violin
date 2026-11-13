@@ -1,0 +1,48 @@
+---
+// Хвиляста нотна лінійка з нотами, краї розчиняються — декоративна, без змісту для скрінрідерів.
+// Колір — currentColor (за замовчуванням теракотовий). Розмір і позицію задає батьківський компонент через class.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// П'ять ліній — однакова хвиля зі зсувом по вертикалі
+const lines = [0, 7, 14, 21, 28];
+---
+
+<svg
+  class:list={['staff', className]}
+  viewBox="0 0 320 64"
+  width="320"
+  height="64"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  {lines.map((d) => <path d={`M0 ${26 + d}C80 ${8 + d} 160 ${44 + d} 320 ${20 + d}`} stroke-width="1" />)}
+  <!-- Пара восьмих під ребром -->
+  <ellipse cx="78" cy="38" rx="6" ry="4.4" transform="rotate(-22 78 38)" fill="currentColor" stroke="none" />
+  <path d="M83.5 35.5V8" />
+  <ellipse cx="128" cy="46" rx="6" ry="4.4" transform="rotate(-22 128 46)" fill="currentColor" stroke="none" />
+  <path d="M133.5 43.5V15" />
+  <path d="M83.5 8L133.5 15L133.5 19L83.5 12Z" fill="currentColor" stroke="none" />
+  <!-- Восьма з прапорцем -->
+  <ellipse cx="212" cy="44" rx="6" ry="4.4" transform="rotate(-22 212 44)" fill="currentColor" stroke="none" />
+  <path d="M217.5 41.5V14" />
+  <path d="M217.5 14C219 21 228 24 229 31C230 36 227 39 225 41" />
+</svg>
+
+<style>
+  .staff {
+    color: var(--color-accent);
+    pointer-events: none;
+    /* Лінійка «виринає» і зникає — без різких обрізаних країв */
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 18%, #000 78%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 18%, #000 78%, transparent);
+  }
+</style>

@@ -1,5 +1,9 @@
 ---
+import { Picture } from 'astro:assets';
+import meetPhoto from '../assets/photos/lesson-meet.jpg';
 import CtaButton from './CtaButton.astro';
+import Notes from './Notes.astro';
+import Staff from './Staff.astro';
 
 const needs = ['Скрипка і смичок', 'Ноутбук або телефон', 'Стабільний інтернет', '50 хвилин тільки для себе'];
 
@@ -24,29 +28,46 @@ const steps = [
 ---
 
 <section class="section section--dark lesson" id="yak-prokhodyt-urok" aria-labelledby="lesson-title">
+  <!-- Нотна лінійка лежить на стику з попередньою секцією, у смузі відступів -->
+  <Staff class="lesson__staff" />
   <div class="container lesson__grid">
     <header class="lesson__head">
-      <p class="eyebrow">Урок</p>
-      <h2 id="lesson-title" class="section-title">Як проходить <em>онлайн-урок</em></h2>
+      <h2 id="lesson-title" class="eyebrow">Як проходить онлайн-урок</h2>
+      <Notes class="lesson__notes" />
     </header>
 
-    <div class="lesson__needs">
-      <h3 class="lesson__subtitle">Що знадобиться</h3>
-      <ul class="lesson__checklist">
-        {
-          needs.map((item) => (
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                <path d="m5 12.5 4.5 4.5L19 7" />
-              </svg>
-              {item}
-            </li>
-          ))
-        }
-      </ul>
-      <p class="lesson__meet">
-        За 5 хвилин до початку я надсилаю посилання на Google Meet. Воно відкривається просто в браузері.
-      </p>
+    <!-- Фото і «Що знадобиться» — поруч, як два полароїди з різним нахилом -->
+    <div class="lesson__intro">
+      <figure class="lesson__photo taped" style="--tape-shift: -25%; --tape-tilt: -6deg">
+        <Picture
+          src={meetPhoto}
+          alt="Ноутбук з відкритим Google Meet: на екрані Софія зі скрипкою, на передньому плані ноти"
+          formats={['avif', 'webp']}
+          widths={[360, 540, 720, 1034]}
+          sizes="(min-width: 75rem) 36rem, (min-width: 48rem) 50vw, (min-width: 30rem) 24rem, 88vw"
+          class="lesson__photo-img"
+        />
+        <figcaption class="lesson__photo-caption">Так урок виглядає з вашого боку екрана</figcaption>
+      </figure>
+
+      <div class="lesson__needs">
+        <h3 class="lesson__subtitle">Що знадобиться</h3>
+        <ul class="lesson__checklist">
+          {
+            needs.map((item) => (
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <path d="m5 12.5 4.5 4.5L19 7" />
+                </svg>
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="lesson__meet">
+          За 5 хвилин до початку я надсилаю посилання на Google Meet. Воно відкривається просто в браузері.
+        </p>
+      </div>
     </div>
 
     <div class="lesson__flow">
@@ -74,7 +95,40 @@ const steps = [
 <style>
   .lesson__grid {
     display: grid;
-    gap: var(--space-l);
+    gap: var(--space-xl);
+  }
+
+  .lesson {
+    position: relative;
+    overflow-x: clip; /* лінійка заходить за лівий край екрана */
+  }
+
+  /* :global — клас передається в дочірній компонент */
+  .lesson :global(.lesson__staff) {
+    position: absolute;
+    z-index: 1; /* над фоном попередньої секції */
+    top: -1.75rem;
+    left: -2.5rem;
+    width: 15rem;
+    height: auto;
+    opacity: 0.8;
+    transform: rotate(-4deg);
+  }
+
+  @media (min-width: 48rem) {
+    .lesson :global(.lesson__staff) {
+      top: -2.5rem;
+      width: 22rem;
+    }
+  }
+
+  .lesson__head {
+    position: relative;
+  }
+
+  /* :global — клас передається в дочірній компонент. Ноти — лише там, де праворуч від заголовка є місце */
+  .lesson__head :global(.lesson__notes) {
+    display: none;
   }
 
   .lesson__subtitle {
@@ -82,9 +136,38 @@ const steps = [
     font-size: var(--text-xl);
   }
 
+  .lesson__intro {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  /* ——— Фото з уроку: світлий полароїд на темному тлі ——— */
+  .lesson__photo {
+    justify-self: center;
+    width: min(100%, 24rem);
+    padding: 0.75rem 0.75rem 0;
+    background-color: #fbf7f0; /* «папір» світлої теми: на темному тлі --color-surface темний */
+    box-shadow: var(--shadow-paper);
+    transform: rotate(1.5deg);
+  }
+
+  .lesson__photo :global(.lesson__photo-img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .lesson__photo-caption {
+    padding-block: 0.6rem 0.7rem;
+    color: var(--color-espresso);
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    font-style: italic;
+    text-align: center;
+  }
+
   /* ——— Що знадобиться: «паперова» картка ——— */
   .lesson__needs {
-    align-self: start;
     padding: var(--space-m);
     background-color: var(--color-surface);
     border: var(--border-thin);
@@ -121,7 +204,7 @@ const steps = [
     font-size: var(--text-sm);
   }
 
-  /* ——— 50 хвилин: кроки з вертикальною лінією ——— */
+  /* ——— 50 хвилин: телефон — кроки з вертикальною лінією ——— */
   .lesson__steps {
     padding: 0;
     list-style: none;
@@ -184,20 +267,91 @@ const steps = [
     font-size: var(--text-sm);
   }
 
-  /* ——— Планшет і більше: картка зліва, кроки справа ——— */
+  /* ——— Планшет і більше: фото й картка поруч, кроки — сіткою ——— */
   @media (min-width: 48rem) {
-    .lesson__grid {
-      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-      column-gap: var(--space-xl);
+    .lesson__head :global(.lesson__notes) {
+      display: block;
+      position: absolute;
+      top: calc(-1 * var(--space-m));
+      right: var(--space-s);
+      width: 6rem;
+      height: auto;
+      opacity: 0.55;
+      transform: rotate(8deg);
     }
 
-    .lesson__head {
-      grid-column: 1 / -1;
+    .lesson__intro {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      column-gap: var(--space-xl);
+      align-items: center;
+    }
+
+    /* Тільки екран з уроком (без клавіатури), щоб фото було одного зросту з карткою */
+    .lesson__photo {
+      justify-self: stretch;
+      width: auto;
+    }
+
+    .lesson__photo :global(.lesson__photo-img) {
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      object-position: 50% 0;
     }
 
     .lesson__needs {
       padding: var(--space-l);
       transform: rotate(-1deg); /* «живий» нахил, як у полароїда */
+    }
+
+    .lesson__steps {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-m) var(--space-l);
+    }
+
+    .lesson__step {
+      padding-bottom: 0;
+    }
+
+    .lesson__step::before {
+      display: none;
+    }
+
+    .lesson__cta {
+      justify-content: center;
+      margin-top: var(--space-l);
+    }
+  }
+
+  /* ——— Широкий екран: 4 кроки в ряд, номери з'єднує горизонтальна лінія ——— */
+  @media (min-width: 64rem) {
+    .lesson__steps {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      column-gap: var(--space-m);
+    }
+
+    .lesson__step {
+      grid-template-columns: minmax(0, 1fr);
+      align-content: start; /* інакше зайва висота сусіднього кроку розтягує рядки */
+    }
+
+    .lesson__num {
+      grid-row: auto;
+      margin-bottom: var(--space-s);
+    }
+
+    .lesson__step-title {
+      align-self: start;
+    }
+
+    .lesson__step:not(:last-child)::before {
+      display: block;
+      top: calc(1.375rem - 0.5px);
+      bottom: auto;
+      left: calc(2.75rem + var(--space-xs));
+      right: calc(var(--space-xs) - var(--space-m));
+      width: auto;
+      height: 1px;
     }
   }
 </style>

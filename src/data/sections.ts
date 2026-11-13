@@ -13,5 +13,4 @@ export const SECTIONS: SectionLink[] = [
   { id: 'yak-prokhodyt-urok', label: 'Урок', nav: true },
   { id: 'vidguky', label: 'Відгуки', nav: true },
   { id: 'faq', label: 'Питання', nav: true },
-  { id: 'zapys', label: 'Запис', nav: false },
 ];
