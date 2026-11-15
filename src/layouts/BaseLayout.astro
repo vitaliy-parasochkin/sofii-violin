@@ -117,8 +117,12 @@ const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c
     <Font cssVariable="--font-body" />
 
     <meta name="theme-color" content={SITE.themeColor} />
+    <!-- Google у видачі бере значок, кратний 48px, або SVG; favicon.ico — запасний варіант, який він шукає за замовчуванням -->
+    <link rel="icon" href={withBase('/favicon.ico')} sizes="16x16 32x32 48x48" />
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
     <link rel="icon" href={withBase('/favicon-32.png')} type="image/png" sizes="32x32" />
+    <link rel="icon" href={withBase('/favicon-48.png')} type="image/png" sizes="48x48" />
+    <link rel="icon" href={withBase('/favicon-192.png')} type="image/png" sizes="192x192" />
     <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
     <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
 
