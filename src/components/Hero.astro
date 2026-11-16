@@ -13,8 +13,8 @@ import HandArrow from './HandArrow.astro';
       src={heroPhoto}
       alt="Софія грає на скрипці в студії"
       formats={['avif', 'webp']}
-      widths={[390, 600, 800, 1080, 1440]}
-      sizes="(min-width: 48rem) 53vw, 100vw"
+      widths={[600, 900, 1200, 1600, 2000, 2560]}
+      sizes="(min-width: 48rem) 150vh, 150vw"
       priority
       class="hero__photo"
     />
@@ -27,8 +27,9 @@ import HandArrow from './HandArrow.astro';
       </h1>
 
       <p class="hero__lead">
-        Привіт, я Софія. Граю на скрипці {TEACHER.yearsPlaying}&nbsp;років, а {TEACHER.yearsTeaching}&nbsp;з них навчаю
-        інших: і дорослих, які починають з нуля, і дітей. Займаємося один на один, тож поспішати нікуди.
+        Привіт, мене звати Софія. Я викладач скрипки для дітей та дорослих з досвідом роботи
+        понад {TEACHER.yearsTeaching}&nbsp;років. Кожен учень для мене особливий, тому я обираю індивідуальний підхід
+        до кожного, враховуючи ваші побажання та рівень підготовки.
       </p>
 
       <div class="hero__actions">
@@ -37,9 +38,9 @@ import HandArrow from './HandArrow.astro';
       </div>
 
       <ul class="hero__facts">
-        <li><strong>50 хвилин</strong> один на один</li>
-        <li><strong>Google Meet</strong> з телефона чи ноутбука</li>
-        <li><strong>З будь-якої країни</strong> українською</li>
+        <li><strong>50 хвилин</strong></li>
+        <li><strong>Google Meet</strong></li>
+        <li><strong>З будь-якої країни</strong></li>
       </ul>
     </div>
   </div>
@@ -239,11 +240,6 @@ import HandArrow from './HandArrow.astro';
       mask-size: 100% 100%;
       mask-repeat: no-repeat;
       mask-composite: intersect;
-    }
-
-    /* Софія — лівіше центру кадру: на вузькій панелі (планшет) обличчя не впирається в край */
-    .hero__media :global(.hero__photo) {
-      object-position: 30% 30%;
     }
 
     /* Текст — у правій колонці, фото — під лівою. Ліва колонка ширша, щоб текст починався за фейдом фото. */
