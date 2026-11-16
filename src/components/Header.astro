@@ -257,10 +257,16 @@ const navItems = SECTIONS.filter((s) => s.nav);
 <script>
   // Показати хедер, щойно користувач почав прокрутку; сховати, коли повернувся в самий верх.
   // Поріг 8px — щоб випадковий мікрорух на тачпаді не смикав хедер.
+  // Телефон: фото — смуга зверху, тож хедер виїжджає лише тоді, коли фото прокручене під нього (не перекриває його).
   const header = document.querySelector<HTMLElement>('.site-header');
-  if (header && document.querySelector('.hero')) {
+  const media = document.querySelector<HTMLElement>('.hero__media');
+  if (header && media) {
+    const phone = matchMedia('(max-width: 47.99rem)');
     let frame = 0;
-    const update = () => header.classList.toggle('is-visible', scrollY > 8);
+    const update = () => {
+      const threshold = phone.matches ? media.offsetHeight - header.offsetHeight : 8;
+      header.classList.toggle('is-visible', scrollY > threshold);
+    };
     addEventListener(
       'scroll',
       () => {
