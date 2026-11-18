@@ -16,7 +16,7 @@ export const TEACHER = {
   yearsPlaying: 16,
   yearsTeaching: 5,
   /** З якого віку можна починати (підтверджено 2026-11-10). */
-  minStudentAge: 5,
+  minStudentAge: 8,
 } as const;
 
 export const LINKS = {
